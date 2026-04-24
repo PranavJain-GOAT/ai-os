@@ -244,9 +244,9 @@ export default function About() {
 
               return (
                 <div key={m.year} className="relative mb-24 w-full">
-                  {/* The SVG Connection to next dot */}
+                  {/* The SVG Connection - Rendered on all sizes */}
                   {!isLast && (
-                    <svg className="absolute pointer-events-none z-0"
+                    <svg className="absolute pointer-events-none z-0 block"
                          style={{
                            left: 0,
                            width: '100%',
@@ -271,13 +271,13 @@ export default function About() {
                     </svg>
                   )}
 
-                  {/* The Dot */}
+                  {/* The Dot - Rendered on all sizes */}
                   <motion.div 
                     initial={{ scale: 0, opacity: 0 }}
                     whileInView={{ scale: 1, opacity: 1 }}
                     viewport={{ once: true, margin: '-15%' }}
                     transition={{ type: 'spring', delay: 0.1, bounce: 0.4 }}
-                    className="absolute z-20 w-4 h-4 rounded-full border border-background shadow-lg"
+                    className="absolute z-20 w-4 h-4 rounded-full border border-background shadow-lg block"
                     style={{ 
                       top: '24px', 
                       left: `${dotX}%`, 
@@ -292,7 +292,7 @@ export default function About() {
                      whileInView={{ opacity: 1, x: 0 }}
                      viewport={{ once: true, margin: '-15%' }}
                      transition={{ duration: 0.7, delay: 0.2, type: 'spring', bounce: 0.2 }}
-                     className={`w-[44%] relative z-10 ${isRight ? 'ml-auto' : 'mr-auto'}`}
+                     className={`w-[45%] relative z-10 ${isRight ? 'ml-auto' : 'mr-auto'}`}
                   >
                      <div className="glass rounded-[1.5rem] p-6 sm:p-8 hover:border-white/20 transition-all shadow-[0_16px_40px_rgba(0,0,0,0.3)]" 
                           style={{ border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.08)' }}>

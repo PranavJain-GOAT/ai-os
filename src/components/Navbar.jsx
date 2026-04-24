@@ -93,9 +93,9 @@ export default function Navbar() {
           }}
           className="flex items-center px-4 sm:px-8"
         >
-          <div className="flex items-center gap-4 sm:gap-6 w-full" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <div className="flex items-center justify-between w-full" style={{ maxWidth: '1400px', margin: '0 auto' }}>
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 shrink-0 group">
+            <Link to="/" className="flex items-center gap-2 shrink-0 group z-50">
               <motion.div
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 className="w-7 h-7 rounded-lg flex items-center justify-center"
@@ -104,7 +104,7 @@ export default function Navbar() {
                 <span className="font-bold text-sm" style={{ fontFamily: 'Georgia, serif', color: logoLetterColor }}>A</span>
               </motion.div>
               <span
-                className="font-bold tracking-tight text-base hidden sm:block"
+                className="font-bold tracking-tight text-[13px] sm:text-base flex items-center"
                 style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.04em', color: logoTextColor }}
               >
                 AIStack
@@ -129,7 +129,7 @@ export default function Navbar() {
             </div>
 
             {/* CTAs */}
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 shrink-0 ml-auto z-50">
               {/* Theme Toggle */}
               <ThemeToggle />
 
@@ -137,16 +137,16 @@ export default function Navbar() {
                 <motion.button
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.96 }}
-                  className={`flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full transition-all ${isDark
+                  className={`flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full transition-all ${isDark
                       ? 'text-white/60 hover:text-white border border-white/12 hover:border-white/25'
                       : 'text-neutral-500 hover:text-neutral-900 border border-black/12 hover:border-black/25'
                     }`}
                 >
-                  <Code2 className="w-3 h-3" />
+                  <Code2 className="w-3 h-3 hidden sm:block" />
                   Sign In
                 </motion.button>
               </Link>
-              <Link to="/">
+              <Link to="/" className="hidden sm:block">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
@@ -156,8 +156,8 @@ export default function Navbar() {
                     color: isDark ? '#000000' : '#ffffff',
                   }}
                 >
-                  <Zap className="w-3 h-3" />
-                  <span className="hidden sm:inline">Browse</span>
+                  <Zap className="w-3 h-3 hidden sm:block" />
+                  <span className="text-[10px] sm:text-xs">Browse</span>
                 </motion.button>
               </Link>
               <button
@@ -185,23 +185,14 @@ export default function Navbar() {
                 : {}
             }
           >
-            <form onSubmit={handleSearch} className="relative">
-              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? 'text-white/30' : 'text-neutral-400'}`} />
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full pl-9 pr-4 py-2.5 rounded-xl text-sm focus:outline-none ${isDark
-                    ? 'bg-white/5 text-white placeholder:text-white/25 border border-white/8'
-                    : 'bg-black/5 text-neutral-900 placeholder:text-neutral-400 border border-black/10'
-                  }`}
-              />
-            </form>
+            <div className="pb-2">
+              <LiveSearch />
+            </div>
             {[
+              { label: "Marketplace", to: "/" },
+              { label: "Features", to: "/features" },
+              { label: "About", to: "/about" },
               { label: "Pricing", to: "/pricing" },
-              { label: "Admin Dashboard", to: "/admin" },
-              { label: "Payment History", to: "/payment-history" },
               { label: "Login / Sign Up", to: "/auth" },
             ].map((item) => (
               <Link

@@ -137,8 +137,10 @@ export default function InstallFlow() {
 
         <div className="flex justify-between mt-4">
           {STEPS.map((s) => (
-            <div key={s.num} className="flex items-center gap-1.5">
-              <span className={`hidden sm:block text-[10px] font-mono tracking-wider uppercase ${step >= s.num ? 'text-[#4D9FFF]' : 'text-white/20'}`}>{s.label}</span>
+            <div key={s.num} className="flex items-center justify-center flex-1 text-center px-1">
+              <span className={`text-[8px] sm:text-[10px] leading-tight font-mono tracking-wider uppercase ${step >= s.num ? 'text-[#4D9FFF]' : 'text-white/20'}`}>
+                {s.label}
+              </span>
             </div>
           ))}
         </div>

@@ -612,17 +612,18 @@ export default function Dashboard() {
                     <p className="text-white/30 text-sm" style={{ fontFamily: "'JetBrains Mono', monospace" }}>No orders yet</p>
                   </div>
                 ) : (
-                  <table className="premium-table w-full">
-                    <thead>
-                      <tr>
-                        <th className="text-left">Product</th>
-                        <th className="text-left hidden sm:table-cell">Customer</th>
-                        <th className="text-left hidden md:table-cell">Time</th>
-                        <th className="text-right">Amount</th>
-                        <th className="text-right">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                  <div className="w-full overflow-x-auto">
+                    <table className="premium-table w-full min-w-[600px]">
+                      <thead>
+                        <tr>
+                          <th className="text-left">Product</th>
+                          <th className="text-left">Customer</th>
+                          <th className="text-left">Time</th>
+                          <th className="text-right">Amount</th>
+                          <th className="text-right">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
                       {orders.slice(0, compact ? 8 : 5).map((o, i) => (
                         <motion.tr
                           key={o.id}
@@ -639,10 +640,10 @@ export default function Dashboard() {
                               <CopyId id={o.id} />
                             </span>
                           </td>
-                          <td className="hidden sm:table-cell">
+                          <td>
                             <span style={{ color: "hsl(var(--foreground) / 0.35)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.72rem" }}>{o.customer_email}</span>
                           </td>
-                          <td className="hidden md:table-cell">
+                          <td>
                             <span style={{ color: "hsl(var(--foreground) / 0.25)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.72rem" }}>{o.time}</span>
                           </td>
                           <td className="text-right">
@@ -655,7 +656,8 @@ export default function Dashboard() {
                       ))}
                     </tbody>
                   </table>
-                )}
+                </div>
+              )}
               </motion.div>
             )}
           </AnimatePresence>

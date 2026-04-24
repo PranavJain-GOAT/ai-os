@@ -139,6 +139,25 @@ export default function DevLayout() {
                 {item.label}
               </Link>
             ))}
+            <div className="pt-2 border-t mt-2" style={{ borderColor: "rgba(150,150,150,0.1)" }}>
+              <div
+                className="flex items-center gap-2.5 px-3.5 py-3 rounded-xl border border-border"
+              >
+                <div className="relative">
+                  <span
+                    className="block w-2.5 h-2.5 rounded-full flex-shrink-0 bg-foreground"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[11px] font-semibold text-foreground tracking-wide">
+                    All Systems Nominal
+                  </div>
+                  <div className="text-[9px] text-foreground/50 font-mono">
+                    Latency 24ms · 99.9% uptime
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

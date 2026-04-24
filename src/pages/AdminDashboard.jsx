@@ -363,7 +363,7 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* Conversations */}
-                    <div className="min-w-[70px] hidden sm:block">
+                    <div className="min-w-[70px]">
                       <div className="stat-label-caps mb-1">Convs</div>
                       <div className="text-white text-xs font-bold metric-num">{sys.conversations.toLocaleString()}</div>
                     </div>
@@ -391,7 +391,7 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* Last Active */}
-                    <div className="flex items-center gap-1.5 min-w-[90px] hidden md:flex">
+                    <div className="flex items-center gap-1.5 min-w-[90px]">
                       <Clock className="w-3 h-3 flex-shrink-0" style={{ color: "hsl(var(--foreground) / 0.2)" }} />
                       <span className="text-[11px]" style={{ color: "hsl(var(--foreground) / 0.3)", fontFamily: "'Inter', sans-serif" }}>{sys.lastActive}</span>
                     </div>

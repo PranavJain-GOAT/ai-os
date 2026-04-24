@@ -190,6 +190,22 @@ export default function ClientLayout() {
                 {item.label}
               </Link>
             ))}
+            <div className="pt-2 border-t mt-2" style={{ borderColor: "rgba(150,150,150,0.1)" }}>
+              <button
+                onClick={() => setVipMode((p) => !p)}
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${vipMode ? 'bg-[hsl(var(--foreground))]/20' : 'bg-transparent'}`}
+              >
+                <div className="flex items-center gap-3">
+                  <Heart className={`w-4 h-4 ${vipMode ? 'text-white' : 'text-white/40'}`} />
+                  <span className={`text-sm font-medium ${vipMode ? 'text-white' : 'text-white/40'}`}>
+                    VIP Priority
+                  </span>
+                </div>
+                <div className={`w-8 h-4 rounded-full border transition-colors flex items-center p-0.5 ${vipMode ? 'bg-[hsl(var(--foreground))]/40 border-[hsl(var(--foreground))]/60' : 'bg-transparent border-white/20'}`}>
+                  <div className={`w-3 h-3 rounded-full transition-transform ${vipMode ? 'bg-white translate-x-4' : 'bg-white/30 translate-x-0'}`} />
+                </div>
+              </button>
+            </div>
           </div>
         )}
 

@@ -261,17 +261,7 @@ export default function HeroSection() {
               </div>
             </motion.div>
 
-            {/* Mobile Thumb Zone CTAs */}
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-black/90 backdrop-blur-xl border-t border-white/10 z-[60] sm:hidden flex flex-col gap-3 pb-6">
-              <Link to="/auth">
-                <button className="shimmer-btn w-full bg-white text-black font-bold text-sm h-12 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                   Deploy Now — Free
-                </button>
-              </Link>
-              <button onClick={() => document.getElementById('instant')?.scrollIntoView({ behavior: 'smooth' })} className="glass w-full text-white/80 font-medium text-sm h-12 rounded-full border border-white/10">
-                 Browse Marketplace
-              </button>
-            </div>
+
           </motion.div>
 
           {/* Right: Live Terminal */}

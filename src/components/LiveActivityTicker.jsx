@@ -54,10 +54,10 @@ export default function LiveActivityTicker() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
           transition={{ duration: 0.4 }}
-          className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none hidden sm:block"
+          className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
         >
           <div
-            className="flex items-center justify-center gap-6 px-6 py-2 text-[11px] uppercase font-mono tracking-wider border-t border-white/10"
+            className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-2 sm:gap-6 px-2 sm:px-6 py-2 text-[8px] sm:text-[11px] uppercase font-mono tracking-wider border-t border-white/10"
             style={{
               background: 'rgba(0,0,0,0.95)',
               backdropFilter: 'blur(20px)',

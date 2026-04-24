@@ -58,9 +58,9 @@ export default function Auth() {
   );
 
   return (
-    <div className={`min-h-screen flex ${isDark ? 'bg-[#0a0a0a]' : 'bg-gray-100'}`}>
+    <div className={`min-h-screen flex flex-col lg:flex-row ${isDark ? 'bg-[#0a0a0a]' : 'bg-gray-100'}`}>
       {/* Left panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center p-12 overflow-hidden">
+      <div className="flex w-full lg:w-1/2 relative items-center justify-center p-8 lg:p-12 overflow-hidden min-h-[450px] lg:min-h-screen">
         <div className={`absolute inset-0 ${isDark ? 'bg-[#0a0a0a]' : 'bg-gray-50'}`} />
         <div className={`absolute top-[-20%] left-[-20%] w-[600px] h-[600px] rounded-full blur-[120px] ${isDark ? 'bg-white/5' : 'bg-black/5'}`} />
         <div className={`absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full blur-[100px] ${isDark ? 'bg-white/3' : 'bg-black/5'}`} />
@@ -101,7 +101,7 @@ export default function Auth() {
       </div>
 
       {/* Right panel - Dynamic Form */}
-      <div className="flex-1 flex items-center justify-center p-8 overflow-y-auto" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
+      <div className="flex-1 w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-8 overflow-y-auto" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
