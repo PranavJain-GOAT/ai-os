@@ -1,0 +1,6 @@
+﻿
+C:\Users\asus\Downloads\New\src\components\home\WordReveal.jsx
+  11:9  warning  'containerRef' is assigned a value but never used. Allowed unused vars must match /^_/u  unused-imports/no-unused-vars
+
+Γ£û 1 problem (0 errors, 1 warning)
+

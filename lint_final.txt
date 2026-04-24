@@ -1,0 +1,6 @@
+﻿
+C:\Users\asus\Downloads\New\src\components\home\WordReveal.jsx
+  29:29  warning  'i' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+Γ£û 1 problem (0 errors, 1 warning)
+
