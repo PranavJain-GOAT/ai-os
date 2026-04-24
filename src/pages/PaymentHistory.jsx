@@ -115,55 +115,57 @@ export default function PaymentHistory() {
               <p className="font-sub font-semibold text-muted-foreground">No orders found</p>
             </div>
           ) : (
-            <>
-              <div className="hidden sm:grid grid-cols-5 gap-4 px-6 py-4 border-b border-border">
-                {["Product", "Type", "Amount", "Status", "Actions"].map((h) => (
-                  <div key={h} className="text-[10px] font-sub font-bold uppercase tracking-widest text-muted-foreground">{h}</div>
-                ))}
+            <div className="overflow-x-auto">
+              <div className="min-w-[700px]">
+                <div className="grid grid-cols-5 gap-4 px-6 py-4 border-b border-border">
+                  {["Product", "Type", "Amount", "Status", "Actions"].map((h) => (
+                    <div key={h} className="text-[10px] font-sub font-bold uppercase tracking-widest text-muted-foreground">{h}</div>
+                  ))}
+                </div>
+                <div className="divide-y divide-border">
+                  {filtered.map((order, i) => {
+                    const sc = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
+                    return (
+                      <motion.div
+                        key={order.id}
+                        initial={{ opacity: 0, x: -12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.04 }}
+                        className="grid grid-cols-5 gap-4 px-6 py-4 hover:bg-muted/30 transition-colors items-center"
+                      >
+                        <div>
+                          <div className="font-sub font-semibold text-sm truncate">{order.product_title}</div>
+                          <div className="text-xs text-muted-foreground">{order.created_date ? new Date(order.created_date).toLocaleDateString() : "—"}</div>
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-sub font-bold uppercase tracking-widest px-2.5 py-1 rounded-md bg-muted text-muted-foreground">
+                            {order.product_type}
+                          </span>
+                        </div>
+                        <div className="font-heading font-bold text-lg">${order.amount}</div>
+                        <div>
+                          <span className={`status-badge inline-flex items-center gap-1.5 text-[11px] tech-label font-bold px-2.5 py-1.5 rounded-lg ${sc.color}`}>
+                            <sc.icon className="w-3 h-3" />
+                            {sc.label}
+                          </span>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => generateInvoice(order)}
+                            className="rounded-xl border-2 border-foreground/10 hover:border-foreground font-sub text-xs gap-1.5"
+                          >
+                            <Download className="w-3 h-3" />
+                            Invoice
+                          </Button>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="divide-y divide-border">
-                {filtered.map((order, i) => {
-                  const sc = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
-                  return (
-                    <motion.div
-                      key={order.id}
-                      initial={{ opacity: 0, x: -12 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.04 }}
-                      className="grid grid-cols-1 sm:grid-cols-5 gap-2 sm:gap-4 px-6 py-4 hover:bg-muted/30 transition-colors items-center"
-                    >
-                      <div>
-                        <div className="font-sub font-semibold text-sm truncate">{order.product_title}</div>
-                        <div className="text-xs text-muted-foreground">{order.created_date ? new Date(order.created_date).toLocaleDateString() : "—"}</div>
-                      </div>
-                      <div>
-                        <span className="text-[10px] font-sub font-bold uppercase tracking-widest px-2.5 py-1 rounded-md bg-muted text-muted-foreground">
-                          {order.product_type}
-                        </span>
-                      </div>
-                      <div className="font-heading font-bold text-lg">${order.amount}</div>
-                      <div>
-                        <span className={`status-badge inline-flex items-center gap-1.5 text-[11px] tech-label font-bold px-2.5 py-1.5 rounded-lg ${sc.color}`}>
-                          <sc.icon className="w-3 h-3" />
-                          {sc.label}
-                        </span>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => generateInvoice(order)}
-                          className="rounded-xl border-2 border-foreground/10 hover:border-foreground font-sub text-xs gap-1.5"
-                        >
-                          <Download className="w-3 h-3" />
-                          Invoice
-                        </Button>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </>
+            </div>
           )}
         </div>
       </div>

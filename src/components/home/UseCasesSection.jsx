@@ -31,19 +31,19 @@ export default function UseCasesSection() {
           <WordReveal text="Built for every industry" tag="h2" className="text-white font-bold" style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em' }} />
         </motion.div>
         <div className="relative pt-10 pb-10">
-          <div className="absolute left-1/2 top-4 bottom-4 w-px bg-white/10 -translate-x-1/2 hidden md:block" />
+          <div className="absolute left-4 sm:left-1/2 top-4 bottom-4 w-px bg-white/10 sm:-translate-x-1/2 block" />
           
           {/* Scroll-Triggered Beam */}
           <motion.div 
              style={{ height: beamHeight }} 
-             className="absolute left-1/2 top-4 w-[2px] bg-gradient-to-b from-transparent via-[#00FF41] to-transparent -translate-x-1/2 hidden md:block shadow-[0_0_15px_rgba(0,255,65,0.8)] z-0 rounded-full" 
+             className="absolute left-4 sm:left-1/2 top-4 w-[2px] bg-gradient-to-b from-transparent via-[#00FF41] to-transparent sm:-translate-x-1/2 block shadow-[0_0_15px_rgba(0,255,65,0.8)] z-0 rounded-full" 
           />
           
-          <div className="flex flex-col gap-12 sm:gap-24 relative z-10">
+          <div className="flex flex-col gap-12 sm:gap-24 relative z-10 pl-8 sm:pl-0">
             {USE_CASES.map((uc, i) => {
               const isEven = i % 2 === 0;
               return (
-                <div key={uc.label} className={`flex ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} justify-center w-full relative sm:px-0 px-4`}>
+                <div key={uc.label} className={`flex ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} justify-center sm:justify-center w-full relative sm:px-0 px-4`}>
                   <motion.div
                     initial={{ opacity: 0, x: isEven ? -40 : 40 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -75,21 +75,7 @@ export default function UseCasesSection() {
                        </div>
                     </div>
                   </motion.div>
-                  {/* Connection Node */}
-                  <div className="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-4 border-[#0a0a0a] bg-white/30 hidden md:block" style={{ top: '50%', transform: 'translate(-50%, -50%)' }} />
-                  {/* Connection Line */}
-                  <motion.div 
-                     initial={{ scaleX: 0 }}
-                     whileInView={{ scaleX: 1 }}
-                     viewport={{ once: true, margin: "-100px" }}
-                     transition={{ delay: 0.3, duration: 0.8 }}
-                     className="absolute top-1/2 h-px bg-white/20 hidden md:block"
-                     style={{
-                        left: isEven ? 'calc(50% - 96px)' : '50%',
-                        right: isEven ? '50%' : 'calc(50% - 96px)',
-                        transformOrigin: isEven ? 'right center' : 'left center'
-                     }}
-                  />
+
                 </div>
               );
             })}
