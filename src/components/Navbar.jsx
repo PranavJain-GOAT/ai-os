@@ -19,12 +19,12 @@ function GlitchLink({ to, label, onClick }) {
       onClick={() => { play('whoosh'); onClick?.(); }}
       onMouseEnter={() => { setGlitching(true); setTimeout(() => setGlitching(false), 400); }}
       className={`relative text-xs font-medium transition-colors px-3 py-1.5 rounded-full overflow-hidden select-none ${active
-        ? isDark
-          ? 'text-white bg-white/8'
-          : 'text-neutral-900 bg-black/8'
-        : isDark
-          ? 'text-white/50 hover:text-white hover:bg-white/6'
-          : 'text-neutral-500 hover:text-neutral-900 hover:bg-black/6'
+          ? isDark
+            ? 'text-white bg-white/8'
+            : 'text-neutral-900 bg-black/8'
+          : isDark
+            ? 'text-white/50 hover:text-white hover:bg-white/6'
+            : 'text-neutral-500 hover:text-neutral-900 hover:bg-black/6'
         }`}
       style={{ letterSpacing: '-0.01em' }}
     >
@@ -138,8 +138,8 @@ export default function Navbar() {
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.96 }}
                   className={`flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full transition-all ${isDark
-                    ? 'text-white/60 hover:text-white border border-white/12 hover:border-white/25'
-                    : 'text-neutral-500 hover:text-neutral-900 border border-black/12 hover:border-black/25'
+                      ? 'text-white/60 hover:text-white border border-white/12 hover:border-white/25'
+                      : 'text-neutral-500 hover:text-neutral-900 border border-black/12 hover:border-black/25'
                     }`}
                 >
                   <Code2 className="w-3 h-3" />
@@ -162,7 +162,7 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className={`md:hidden self-end ml-auto p-1 ${isDark ? 'text-white/60 hover:text-white' : 'text-neutral-500 hover:text-neutral-900'}`}
+                className={`md:hidden p-1 ${isDark ? 'text-white/60 hover:text-white' : 'text-neutral-500 hover:text-neutral-900'}`}
               >
                 {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -178,7 +178,7 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="fixed top-24 left-4 right-4 z-40 glass rounded-2xl p-4 space-y-2"
+            className="fixed top-20 left-4 right-4 z-40 glass rounded-2xl p-4 space-y-2"
             style={
               !isDark
                 ? { background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(0,0,0,0.08)' }
@@ -193,8 +193,8 @@ export default function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className={`w-full pl-9 pr-4 py-2.5 rounded-xl text-sm focus:outline-none ${isDark
-                  ? 'bg-white/5 text-white placeholder:text-white/25 border border-white/8'
-                  : 'bg-black/5 text-neutral-900 placeholder:text-neutral-400 border border-black/10'
+                    ? 'bg-white/5 text-white placeholder:text-white/25 border border-white/8'
+                    : 'bg-black/5 text-neutral-900 placeholder:text-neutral-400 border border-black/10'
                   }`}
               />
             </form>
@@ -209,8 +209,8 @@ export default function Navbar() {
                 to={item.to}
                 onClick={() => setMobileOpen(false)}
                 className={`block text-sm px-3 py-2.5 rounded-xl transition-colors ${isDark
-                  ? 'text-white/60 hover:text-white hover:bg-white/6'
-                  : 'text-neutral-500 hover:text-neutral-900 hover:bg-black/6'
+                    ? 'text-white/60 hover:text-white hover:bg-white/6'
+                    : 'text-neutral-500 hover:text-neutral-900 hover:bg-black/6'
                   }`}
               >
                 {item.label}
