@@ -2,14 +2,13 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MOCK_PRODUCTS, MOCK_CUSTOM_SOLUTIONS } from "@/api/mockData";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowLeft, Check, Upload, Building2, Settings, CreditCard } from "lucide-react";
+import { ArrowRight, ArrowLeft, Check, Upload, Settings, CreditCard, Shield, Smartphone, QrCode, CreditCard as CardIcon, Loader2, Link as LinkIcon, ExternalLink, Plus, X, Image as ImageIcon, FileText, FileBadge, Building2, MapPin, Mail, Phone, Globe, Briefcase, UserRoundSearch } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const STEPS = [
-  { num: 1, label: "Business Info", icon: Building2 },
-  { num: 2, label: "Upload Data", icon: Upload },
-  { num: 3, label: "Select Features", icon: Settings },
-  { num: 4, label: "Payment", icon: CreditCard },
+  { num: 1, label: "Company Details", icon: Building2 },
+  { num: 2, label: "Dev Instructions", icon: UserRoundSearch },
+  { num: 3, label: "Payment", icon: CreditCard },
 ];
 
 export default function InstallFlow() {
@@ -17,9 +16,24 @@ export default function InstallFlow() {
   const [step, setStep] = useState(1);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [payMethod, setPayMethod] = useState("card");
+  
+  // Delivery State Tracking
+  // 0: Payment Completed, 1: Setup in Progress, 2: Delivered
+  const [deliveryStatus, setDeliveryStatus] = useState(0);
+
   const [formData, setFormData] = useState({
-    businessName: "", businessType: "", email: "", phone: "",
-    selectedFeatures: [],
+    companyName: "",
+    industry: "",
+    email: "",
+    phone: "",
+    location: "",
+    website: "",
+    taxId: "",
+    logoUploaded: false,
+    imagesUploaded: false,
+    extraDocuments: [{ name: "", uploaded: false }],
+    customInstructions: [""],
   });
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -38,39 +52,57 @@ export default function InstallFlow() {
     }, 400);
   }, [id, type]);
 
-  const toggleFeature = (f) => {
-    setFormData((prev) => ({
-      ...prev,
-      selectedFeatures: prev.selectedFeatures.includes(f)
-        ? prev.selectedFeatures.filter((x) => x !== f)
-        : [...prev.selectedFeatures, f],
-    }));
-  };
-
   const handleComplete = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate payment processing delay
+    // Simulate Razorpay processing delay
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 2000)); 
     console.log("Mock Order Created:", {
       product_type: type,
       product_id: id,
       product_title: product?.title || "Unknown",
       amount: product?.price || product?.price_min || 0,
-      status: "paid",
-      customer_email: formData.email,
+      payment_method: payMethod,
+      customer_data: formData,
     });
-    setStep(5);
+    setLoading(false);
+    setStep(4); // Step 4 is now the status page
+    setDeliveryStatus(0);
+
+    // Simulate delivery workflow
+    setTimeout(() => setDeliveryStatus(1), 1500); // Move to Setup in Progress
+    setTimeout(() => setDeliveryStatus(2), 4000); // Move to Delivered
   };
 
-  if (loading) {
+  const simulateUpload = (field) => {
+    setFormData(p => ({ ...p, [field]: true }));
+  };
+
+  const simulateExtraUpload = (index) => {
+    const newDocs = [...formData.extraDocuments];
+    newDocs[index].uploaded = true;
+    setFormData(p => ({ ...p, extraDocuments: newDocs }));
+  };
+
+  const addExtraDoc = () => {
+    setFormData(p => ({ ...p, extraDocuments: [...p.extraDocuments, { name: "", uploaded: false }] }));
+  };
+
+  const removeExtraDoc = (index) => {
+    const newDocs = formData.extraDocuments.filter((_, i) => i !== index);
+    setFormData(p => ({ ...p, extraDocuments: newDocs }));
+  };
+
+  if (loading && step < 4) {
     return (
-      <div className="flex justify-center py-32">
+      <div className="flex justify-center items-center py-32 flex-col gap-4">
         <div className="w-8 h-8 border-4 border-muted border-t-foreground rounded-full animate-spin" />
+        {step === 3 && <p className="text-sm font-semibold text-muted-foreground animate-pulse">Processing Payment securely via Razorpay...</p>}
       </div>
     );
   }
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-      {/* SVG Filter for Liquid Goo Effect */}
       <svg className="hidden">
         <defs>
           <filter id="goo">
@@ -81,88 +113,117 @@ export default function InstallFlow() {
         </defs>
       </svg>
 
-      {/* Floating Breadcrumbs (Task 13) */}
-      <div className="hidden xl:block fixed left-10 top-1/2 -translate-y-1/2 p-7 glass-dark rounded-[2rem] z-50 shadow-2xl border border-white/10 backdrop-blur-xl">
-         <div className="text-[10px] font-mono tracking-widest text-[#4D9FFF] mb-8 uppercase text-center font-bold">Install Progress</div>
-         <div className="flex flex-col gap-10 relative">
-           <div className="absolute left-[15px] top-4 bottom-4 w-px bg-white/10" />
-           <motion.div 
-              className="absolute left-[15px] top-4 w-[2px] bg-gradient-to-b from-[#4D9FFF] to-[#4D9FFF] rounded-full shadow-[0_0_10px_rgba(77,159,255,0.8)]"
-              initial={{ height: 0 }}
-              animate={{ height: `${((Math.min(step, 4) - 1) / (STEPS.length - 1)) * 100}%` }} 
-              transition={{ type: 'spring', damping: 20, stiffness: 100 }} 
-           />
-           
-           {STEPS.map((s) => (
-              <div key={s.num} className="flex items-center gap-4 relative z-10 group">
-                 <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-                     step > s.num ? 'bg-[#4D9FFF] text-[#0a0a0a] shadow-[0_0_15px_rgba(77,159,255,0.4)]' : 
-                     step === s.num ? 'bg-white text-[#0a0a0a] shadow-[0_0_20px_rgba(255,255,255,0.8)] scale-110 border border-white/20' : 
-                     'bg-[#0a0a0a] border border-white/20 text-white/30 group-hover:border-white/50'
-                 }`}>
-                    {step > s.num ? <Check className="w-4 h-4" /> : <s.icon className={`w-3.5 h-3.5 ${step === s.num ? 'stroke-[2.5px]' : ''}`} />}
-                 </div>
-                 <div className={`font-semibold text-xs tracking-wide transition-colors ${step >= s.num ? 'text-white' : 'text-white/30'}`}>{s.label}</div>
-              </div>
-           ))}
-         </div>
-      </div>
-
-      {/* Progress Bar — Liquid style (Task 12) */}
-      <div className="mb-10 xl:hidden">
-        <div className="flex items-center justify-between mb-4">
-          <div className="text-sm font-semibold text-white/80" style={{ fontFamily: 'Georgia, serif' }}>
-            Step {Math.min(step, 4)} of {STEPS.length}
-            <span className="text-white/30 font-normal ml-2 font-mono text-xs">— {STEPS[Math.min(step, 4) - 1]?.label}</span>
-          </div>
-          <div className="text-xs font-mono text-[#4D9FFF]">{Math.round(((Math.min(step, 4) - 1) / STEPS.length) * 100)}% <span className="opacity-50">complete</span></div>
+      {/* Floating Breadcrumbs (Desktop) */}
+      {step < 4 && (
+        <div className="hidden xl:block fixed left-10 top-1/2 -translate-y-1/2 p-7 glass-dark rounded-[2rem] z-50 shadow-2xl border border-white/10 backdrop-blur-xl">
+           <div className="text-[10px] font-mono tracking-widest text-[#4D9FFF] mb-8 uppercase text-center font-bold">Install Progress</div>
+           <div className="flex flex-col gap-10 relative">
+             <div className="absolute left-[15px] top-4 bottom-4 w-px bg-white/10" />
+             <motion.div 
+                className="absolute left-[15px] top-4 w-[2px] bg-gradient-to-b from-[#4D9FFF] to-[#4D9FFF] rounded-full shadow-[0_0_10px_rgba(77,159,255,0.8)]"
+                initial={{ height: 0 }}
+                animate={{ height: `${((Math.min(step, 3) - 1) / (STEPS.length - 1)) * 100}%` }} 
+                transition={{ type: 'spring', damping: 20, stiffness: 100 }} 
+             />
+             
+             {STEPS.map((s) => (
+                <div key={s.num} className="flex items-center gap-4 relative z-10 group">
+                   <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                       step > s.num ? 'bg-[#4D9FFF] text-[#0a0a0a] shadow-[0_0_15px_rgba(77,159,255,0.4)]' : 
+                       step === s.num ? 'bg-white text-[#0a0a0a] shadow-[0_0_20px_rgba(255,255,255,0.8)] scale-110 border border-white/20' : 
+                       'bg-[#0a0a0a] border border-white/20 text-white/30 group-hover:border-white/50'
+                   }`}>
+                      {step > s.num ? <Check className="w-4 h-4" /> : <s.icon className={`w-3.5 h-3.5 ${step === s.num ? 'stroke-[2.5px]' : ''}`} />}
+                   </div>
+                   <div className={`font-semibold text-xs tracking-wide transition-colors ${step >= s.num ? 'text-white' : 'text-white/30'}`}>{s.label}</div>
+                </div>
+             ))}
+           </div>
         </div>
-        
-        {/* The Liquid Container */}
-        <div className="relative h-2.5 w-full bg-white/5 rounded-full overflow-hidden" style={{ filter: 'url(#goo)' }}>
-           <motion.div 
-             className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-nova-blue to-cyber-green rounded-r-full"
-             initial={{ width: 0 }}
-             animate={{ width: `${((Math.min(step, 4) - 1) / (STEPS.length - 1)) * 100}%` }}
-             transition={{ type: "spring", stiffness: 60, damping: 15, mass: 1.5 }}
-           />
-           {/* Blob leading the liquid */}
-           <motion.div 
-             className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-[#4D9FFF]"
-             initial={{ left: 0 }}
-             animate={{ left: `calc(${((Math.min(step, 4) - 1) / (STEPS.length - 1)) * 100}% - 8px)` }}
-             transition={{ type: "spring", stiffness: 60, damping: 15, mass: 1.5 }}
-           />
-        </div>
+      )}
 
-        <div className="flex justify-between mt-4">
-          {STEPS.map((s) => (
-            <div key={s.num} className="flex items-center justify-center flex-1 text-center px-1">
-              <span className={`text-[8px] sm:text-[10px] leading-tight font-mono tracking-wider uppercase ${step >= s.num ? 'text-[#4D9FFF]' : 'text-white/20'}`}>
-                {s.label}
-              </span>
+      {/* Progress Bar (Mobile) */}
+      {step < 4 && (
+        <div className="mb-10 xl:hidden">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-sm font-semibold text-white/80" style={{ fontFamily: 'Georgia, serif' }}>
+              Step {Math.min(step, 3)} of {STEPS.length}
+              <span className="text-white/30 font-normal ml-2 font-mono text-xs">— {STEPS[Math.min(step, 3) - 1]?.label}</span>
             </div>
-          ))}
+            <div className="text-xs font-mono text-[#4D9FFF]">{Math.round(((Math.min(step, 3) - 1) / STEPS.length) * 100)}% <span className="opacity-50">complete</span></div>
+          </div>
+          
+          <div className="relative h-2.5 w-full bg-white/5 rounded-full overflow-hidden" style={{ filter: 'url(#goo)' }}>
+             <motion.div 
+               className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-nova-blue to-cyber-green rounded-r-full"
+               initial={{ width: 0 }}
+               animate={{ width: `${((Math.min(step, 3) - 1) / (STEPS.length - 1)) * 100}%` }}
+               transition={{ type: "spring", stiffness: 60, damping: 15, mass: 1.5 }}
+             />
+             <motion.div 
+               className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-[#4D9FFF]"
+               initial={{ left: 0 }}
+               animate={{ left: `calc(${((Math.min(step, 3) - 1) / (STEPS.length - 1)) * 100}% - 8px)` }}
+               transition={{ type: "spring", stiffness: 60, damping: 15, mass: 1.5 }}
+             />
+          </div>
+
+          <div className="flex justify-between mt-4">
+            {STEPS.map((s) => (
+              <div key={s.num} className="flex items-center justify-center flex-1 text-center px-1">
+                <span className={`text-[8px] sm:text-[10px] leading-tight font-mono tracking-wider uppercase ${step >= s.num ? 'text-[#4D9FFF]' : 'text-white/20'}`}>
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <AnimatePresence mode="wait">
-        {step === 5 ? (
-          <motion.div key="done" initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ type: 'spring', stiffness: 220, damping: 22 }} className="text-center py-16">
-            <div className="w-20 h-20 bg-foreground text-background rounded-full flex items-center justify-center mx-auto mb-6">
-              <Check className="w-8 h-8" />
+        {step === 4 ? (
+          <motion.div key="done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: 'spring', stiffness: 220, damping: 22 }} className="max-w-xl mx-auto py-8">
+            <div className="bg-card border border-white/10 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden">
+              {/* Animated glow background */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-[150%] bg-gradient-to-b from-nova-blue/10 to-transparent rounded-full blur-[100px] pointer-events-none" />
+
+              <h2 className="font-heading text-3xl font-bold mb-8 text-center text-white relative z-10">Order Status</h2>
+              
+              <div className="space-y-6 relative z-10 mb-10">
+                <StatusItem active={deliveryStatus >= 0} label="Payment Completed" time="Just now" icon={CreditCard} />
+                <StatusItem active={deliveryStatus >= 1} label="Developer Workflow: Setup in Progress" time={deliveryStatus >= 1 ? "In Progress" : "Waiting..."} icon={Settings} loading={deliveryStatus === 1} />
+                <StatusItem active={deliveryStatus >= 2} label="System Delivered & Hosted" time={deliveryStatus >= 2 ? "Ready" : "Pending..."} icon={Check} isLast />
+              </div>
+
+              {deliveryStatus === 2 && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center border-t border-white/10 pt-8 mt-4 relative z-10">
+                   <div className="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+                     <Check className="w-8 h-8" />
+                   </div>
+                   <h3 className="text-2xl font-bold mb-2">Your system is live!</h3>
+                   <p className="text-muted-foreground text-sm mb-6">We've generated a unique client instance for your platform.</p>
+                   
+                   <div className="bg-black/50 border border-white/10 rounded-xl p-4 flex items-center justify-between mb-8">
+                     <div className="flex items-center gap-3">
+                       <LinkIcon className="w-4 h-4 text-[#4D9FFF]" />
+                       <span className="font-mono text-sm text-white/80">https://platform.com/{formData.companyName?.toLowerCase().replace(/\s+/g, '-') || "client-slug"}</span>
+                     </div>
+                     <Button size="sm" variant="outline" className="h-8 border-white/20 hover:bg-white/10">Copy</Button>
+                   </div>
+
+                   <div className="flex flex-col sm:flex-row gap-3">
+                     <Link to="/client" className="flex-1">
+                       <Button className="w-full bg-white text-black rounded-xl font-heading font-bold h-12 hover:bg-white/90">
+                         Go to Dashboard
+                       </Button>
+                     </Link>
+                     <Button variant="outline" className="flex-1 rounded-xl h-12 border-white/20 gap-2 hover:bg-white/5">
+                       Open System <ExternalLink className="w-4 h-4" />
+                     </Button>
+                   </div>
+                </motion.div>
+              )}
             </div>
-            <h2 className="font-heading text-3xl font-bold mb-3">Installation Complete!</h2>
-            <p className="text-muted-foreground max-w-md mx-auto mb-8">
-              {type === "instant"
-                ? "Your AI system is now live. You'll receive setup details via email."
-                : "Your order has been placed. The developer will contact you within 24 hours."}
-            </p>
-            <Link to="/">
-              <Button className="bg-foreground text-background font-heading font-bold rounded-xl h-12 px-8 hover:bg-white/90">
-                Back to Home
-              </Button>
-            </Link>
           </motion.div>
         ) : (
           <motion.div
@@ -172,88 +233,304 @@ export default function InstallFlow() {
             exit={{ opacity: 0, x: -48, scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 320, damping: 30 }}
           >
-            <div className="bg-card border-2 border-border rounded-2xl p-6 sm:p-8">
+            <div className="bg-card border-2 border-border rounded-[2rem] p-6 sm:p-10 shadow-xl">
               {step === 1 && (
-                <StepContent title="Tell us about your business">
-                  <InputField label="Business Name" value={formData.businessName} onChange={(v) => setFormData((p) => ({ ...p, businessName: v }))} />
-                  <div>
-                    <label className="text-xs font-heading font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Business Type</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {["Restaurant", "Salon", "E-commerce", "Real Estate", "Healthcare", "Other"].map((t) => (
-                        <button key={t} onClick={() => setFormData((p) => ({ ...p, businessType: t }))}
-                          className={`px-4 py-3 rounded-xl text-sm font-medium border-2 transition-all ${formData.businessType === t ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"
-                            }`}>
-                          {t}
-                        </button>
-                      ))}
+                <StepContent title="System Blueprint & Data" subtitle="Provide the essential blueprints and documents so we can structure your enterprise AI precisely to your operations.">
+                  
+                  {/* Enterprise Company Details */}
+                  <div className="mb-8">
+                    <h3 className="text-lg font-bold text-white mb-2">Company Core Details</h3>
+                    <p className="text-xs text-white/40 mb-4">Establishing your business identity for the system.</p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <UploadItem 
+                        title="Company Name" 
+                        description="Official registered business name"
+                        icon={Building2}
+                        isInput={true}
+                        value={formData.companyName}
+                        onChange={(val) => setFormData(p => ({ ...p, companyName: val }))}
+                        uploaded={formData.companyName.trim().length > 0}
+                        placeholder="e.g. Acme Corporation"
+                      />
+                      <UploadItem 
+                        title="Industry / Sector" 
+                        description="Primary field of operation"
+                        icon={Briefcase}
+                        isInput={true}
+                        value={formData.industry}
+                        onChange={(val) => setFormData(p => ({ ...p, industry: val }))}
+                        uploaded={formData.industry.trim().length > 0}
+                        placeholder="e.g. E-commerce, Real Estate"
+                      />
+                      <UploadItem 
+                        title="Headquarters / Location" 
+                        description="Primary physical or operating region"
+                        icon={MapPin}
+                        isInput={true}
+                        value={formData.location}
+                        onChange={(val) => setFormData(p => ({ ...p, location: val }))}
+                        uploaded={formData.location.trim().length > 0}
+                        placeholder="City, State, Country"
+                      />
+                      <UploadItem 
+                        title="Corporate Website" 
+                        description="Main domain URL"
+                        icon={Globe}
+                        isInput={true}
+                        value={formData.website}
+                        onChange={(val) => setFormData(p => ({ ...p, website: val }))}
+                        uploaded={formData.website.trim().length > 0}
+                        placeholder="https://acmecorp.com"
+                      />
+                      <UploadItem 
+                        title="Official Email" 
+                        description="Primary contact email"
+                        icon={Mail}
+                        isInput={true}
+                        value={formData.email}
+                        onChange={(val) => setFormData(p => ({ ...p, email: val }))}
+                        uploaded={formData.email.trim().length > 0}
+                        placeholder="contact@acmecorp.com"
+                      />
+                      <UploadItem 
+                        title="Contact Phone" 
+                        description="Main operating line"
+                        icon={Phone}
+                        isInput={true}
+                        value={formData.phone}
+                        onChange={(val) => setFormData(p => ({ ...p, phone: val }))}
+                        uploaded={formData.phone.trim().length > 0}
+                        placeholder="+1 (555) 000-0000"
+                      />
+                      <div className="md:col-span-2">
+                        <UploadItem 
+                          title="Tax ID / Registration (Optional)" 
+                          description="For enterprise billing verification"
+                          icon={FileText}
+                          isInput={true}
+                          value={formData.taxId}
+                          onChange={(val) => setFormData(p => ({ ...p, taxId: val }))}
+                          uploaded={formData.taxId.trim().length > 0}
+                          placeholder="VAT / EIN / GSTIN"
+                        />
+                      </div>
                     </div>
                   </div>
-                  <InputField label="Email" type="email" value={formData.email} onChange={(v) => setFormData((p) => ({ ...p, email: v }))} />
-                  <InputField label="Phone (optional)" type="tel" value={formData.phone} onChange={(v) => setFormData((p) => ({ ...p, phone: v }))} />
-                </StepContent>
-              )}
-              {step === 2 && (
-                <StepContent title="Upload your data">
-                  <div className="border-2 border-dashed border-border rounded-2xl p-12 text-center hover:border-foreground transition-colors cursor-pointer">
-                    <Upload className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                    <p className="font-heading font-semibold mb-1">Drop files here or click to upload</p>
-                    <p className="text-sm text-muted-foreground">Menus, product lists, images, etc.</p>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-3">This step is optional. You can add data later.</p>
-                </StepContent>
-              )}
-              {step === 3 && (
-                <StepContent title="Select your features">
-                  <div className="space-y-2">
-                    {(product?.features || ["AI Chatbot", "Automated Responses", "Analytics Dashboard", "Email Notifications", "Multi-language Support"]).map((f) => (
-                      <button key={f} onClick={() => toggleFeature(f)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 text-left transition-all ${formData.selectedFeatures.includes(f) ? "border-foreground bg-foreground/5" : "border-border hover:border-foreground/30"
-                          }`}>
-                        <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 ${formData.selectedFeatures.includes(f) ? "border-foreground bg-foreground" : "border-border"
-                          }`}>
-                          {formData.selectedFeatures.includes(f) && <Check className="w-3 h-3 text-background" />}
+
+                  {/* Media & Assets Upload */}
+                  <div className="pt-6 border-t border-white/10 mb-2">
+                    <h3 className="text-lg font-bold text-white mb-2">Media & Knowledge Base</h3>
+                    <p className="text-xs text-white/40 mb-4">Upload necessary files and documentation.</p>
+                    
+                    <div className="space-y-3">
+                      <UploadItem 
+                        title="Company Logo" 
+                        description="Upload a high-res image of your brand logo (PNG/SVG)."
+                        icon={FileBadge}
+                        uploaded={formData.logoUploaded}
+                        onAction={() => simulateUpload('logoUploaded')}
+                      />
+                      <UploadItem 
+                        title="Product Images & Catalog" 
+                        description="Provide your product photos, brochures, or data PDFs."
+                        icon={ImageIcon}
+                        uploaded={formData.imagesUploaded}
+                        onAction={() => simulateUpload('imagesUploaded')}
+                      />
+                      
+                      {/* Dynamic Additional Documents */}
+                      <div className="pt-4 border-t border-white/5">
+                        <h4 className="text-sm font-bold text-white mb-4">Additional Documents</h4>
+                        <div className="space-y-4">
+                          <AnimatePresence>
+                            {formData.extraDocuments.map((doc, idx) => (
+                              <motion.div 
+                                key={idx}
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="relative"
+                              >
+                                <UploadItem 
+                                  title={doc.name || `Document #${idx + 1}`}
+                                  description="Provide a name and upload your custom document."
+                                  icon={Upload}
+                                  uploaded={doc.uploaded}
+                                  onAction={() => simulateExtraUpload(idx)}
+                                  isInput={!doc.uploaded}
+                                  value={doc.name}
+                                  onChange={(val) => {
+                                    const newDocs = [...formData.extraDocuments];
+                                    newDocs[idx].name = val;
+                                    setFormData(p => ({ ...p, extraDocuments: newDocs }));
+                                  }}
+                                  placeholder="Document Name (e.g. Sales Deck)"
+                                  showUploadButtonForInput={true}
+                                />
+                                {formData.extraDocuments.length > 1 && (
+                                  <Button 
+                                    variant="ghost" 
+                                    onClick={() => removeExtraDoc(idx)} 
+                                    className="absolute -top-2 -right-2 w-6 h-6 p-0 rounded-full bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white z-20"
+                                  >
+                                    <X className="w-3 h-3"/>
+                                  </Button>
+                                )}
+                              </motion.div>
+                            ))}
+                          </AnimatePresence>
+                          <Button 
+                            variant="outline" 
+                            className="w-full border-dashed border-white/10 text-white/40 hover:text-white hover:border-white/30 h-12 rounded-xl"
+                            onClick={addExtraDoc}
+                          >
+                            <Plus className="w-4 h-4 mr-2" /> Add Another Document
+                          </Button>
                         </div>
-                        <span className="text-sm font-medium">{f}</span>
-                      </button>
-                    ))}
+                      </div>
+                    </div>
                   </div>
                 </StepContent>
               )}
-              {step === 4 && (
-                <StepContent title="Complete your order">
-                  <div className="bg-muted rounded-xl p-5 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">{product?.title}</span>
-                      <span className="font-heading font-bold">${product?.price || `${product?.price_min}–${product?.price_max}`}</span>
+
+              {step === 2 && (
+                <StepContent title="Custom Instructions to the Developer" subtitle="Specify your exact requirements, requested features, or workflow adjustments for the development team.">
+                  <div className="bg-nova-blue/10 border border-nova-blue/30 rounded-xl p-5 mb-8 flex gap-3 items-start">
+                    <UserRoundSearch className="w-5 h-5 text-nova-blue shrink-0 mt-0.5" />
+                    <p className="text-sm text-nova-blue/90 leading-relaxed">
+                      Your requests will be sent directly to our development specialists. Use this section to outline any specific UI changes, custom integrations, or logic adjustments you need for your system.
+                    </p>
+                  </div>
+                    
+                  <div className="space-y-3">
+                    <AnimatePresence>
+                      {formData.customInstructions.map((inst, idx) => (
+                        <motion.div 
+                          key={idx}
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="flex gap-2"
+                        >
+                          <input 
+                            value={inst}
+                            onChange={(e) => {
+                              const newInst = [...formData.customInstructions];
+                              newInst[idx] = e.target.value;
+                              setFormData(p => ({ ...p, customInstructions: newInst }));
+                            }}
+                            placeholder={`Instruction #${idx + 1} (e.g. Integrate with our custom CRM endpoint)`}
+                            className="flex-1 bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:border-[#4D9FFF] outline-none transition-all"
+                          />
+                          {formData.customInstructions.length > 1 && (
+                            <Button 
+                              variant="ghost" 
+                              onClick={() => {
+                                const newInst = formData.customInstructions.filter((_, i) => i !== idx);
+                                setFormData(p => ({ ...p, customInstructions: newInst }));
+                              }} 
+                              className="px-3 text-white/40 hover:text-red-400 hover:bg-red-400/10 rounded-lg"
+                            >
+                              <X className="w-4 h-4"/>
+                            </Button>
+                          )}
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-dashed border-white/20 text-white/60 hover:text-white hover:border-white/50 h-12 rounded-xl mt-2"
+                      onClick={() => setFormData(p => ({ ...p, customInstructions: [...p.customInstructions, ""] }))}
+                    >
+                      <Plus className="w-4 h-4 mr-2" /> Add Next Request
+                    </Button>
+                  </div>
+                </StepContent>
+              )}
+              
+              {step === 3 && (
+                <StepContent title="Complete Payment" subtitle="Secure checkout via Razorpay Gateway.">
+                  {/* Order Summary */}
+                  <div className="bg-black/40 border border-white/10 rounded-2xl p-6 mb-8 flex justify-between items-center">
+                    <div>
+                      <p className="text-xs text-white/50 font-mono uppercase tracking-widest mb-1">Order Summary</p>
+                      <h3 className="text-xl font-bold text-white">{product?.title || "Custom AI Solution"}</h3>
+                      <p className="text-sm text-[#4D9FFF] mt-1">{type === 'instant' ? 'Instant Deployment' : 'Developer Workflow'}</p>
                     </div>
-                    <div className="border-t border-border pt-3 flex items-center justify-between">
-                      <span className="font-heading font-bold">Total</span>
-                      <span className="font-heading text-2xl font-bold">${product?.price || product?.price_min}</span>
+                    <div className="text-right">
+                      <p className="text-3xl font-bold text-white">${product?.price || product?.price_min || "Custom"}</p>
+                      <p className="text-xs text-white/40 mt-1">One-time setup fee</p>
                     </div>
                   </div>
-                  <InputField label="Card Number" placeholder="4242 4242 4242 4242" />
-                  <div className="grid grid-cols-2 gap-4">
-                    <InputField label="Expiry" placeholder="MM/YY" />
-                    <InputField label="CVC" placeholder="123" />
+
+                  {/* Razorpay Mock Interface */}
+                  <div className="border border-white/10 rounded-2xl overflow-hidden bg-black/20">
+                    <div className="bg-[#020420] border-b border-white/10 p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Shield className="w-4 h-4 text-cyber-green" />
+                        <span className="text-xs font-semibold text-white/60 uppercase tracking-widest">Razorpay Secure</span>
+                      </div>
+                      <div className="flex gap-1">
+                        <div className="w-8 h-5 bg-white/10 rounded" />
+                        <div className="w-8 h-5 bg-white/10 rounded" />
+                        <div className="w-8 h-5 bg-white/10 rounded" />
+                      </div>
+                    </div>
+                    
+                    <div className="flex border-b border-white/10">
+                      <button 
+                        onClick={() => setPayMethod('card')}
+                        className={`flex-1 py-4 flex items-center justify-center gap-2 text-sm font-semibold transition-all ${payMethod === 'card' ? 'bg-white/5 text-white border-b-2 border-[#4D9FFF]' : 'text-white/40 hover:text-white/70 hover:bg-white/[0.02]'}`}
+                      >
+                        <CardIcon className="w-4 h-4" /> Card
+                      </button>
+                      <button 
+                        onClick={() => setPayMethod('upi')}
+                        className={`flex-1 py-4 flex items-center justify-center gap-2 text-sm font-semibold transition-all ${payMethod === 'upi' ? 'bg-white/5 text-white border-b-2 border-[#4D9FFF]' : 'text-white/40 hover:text-white/70 hover:bg-white/[0.02]'}`}
+                      >
+                        <Smartphone className="w-4 h-4" /> UPI
+                      </button>
+                    </div>
+
+                    <div className="p-6">
+                      {payMethod === 'card' ? (
+                        <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+                          <InputField label="Card Number" placeholder="0000 0000 0000 0000" />
+                          <div className="grid grid-cols-2 gap-4">
+                            <InputField label="Expiry" placeholder="MM/YY" />
+                            <InputField label="CVV" type="password" placeholder="•••" />
+                          </div>
+                          <InputField label="Cardholder Name" placeholder="Name on card" />
+                        </div>
+                      ) : (
+                        <div className="animate-in fade-in slide-in-from-left-4 duration-300 py-4 text-center">
+                          <QrCode className="w-32 h-32 text-white/80 mx-auto mb-6" />
+                          <p className="text-sm text-white/60 mb-4">Scan QR with any UPI app</p>
+                          <InputField label="Or enter UPI ID" placeholder="username@upi" />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </StepContent>
               )}
             </div>
 
             {/* Navigation */}
-            <div className="flex items-center justify-between mt-6">
+            <div className="flex items-center justify-between mt-8 px-2">
               {step > 1 ? (
-                <Button variant="outline" onClick={() => setStep(step - 1)} className="border-2 border-foreground/20 rounded-xl font-heading font-semibold gap-2">
+                <Button variant="ghost" onClick={() => setStep(step - 1)} className="rounded-xl font-heading font-semibold gap-2 hover:bg-white/5 text-white/60 hover:text-white h-12 px-6">
                   <ArrowLeft className="w-4 h-4" /> Back
                 </Button>
               ) : <div />}
-              {step < 4 ? (
-                <Button onClick={() => setStep(step + 1)} className="bg-foreground text-background rounded-xl font-heading font-bold gap-2 h-12 px-6">
-                  Continue <ArrowRight className="w-4 h-4" />
+              {step < 3 ? (
+                <Button onClick={() => setStep(step + 1)} className="bg-white text-black rounded-xl font-heading font-bold gap-2 h-12 px-8 hover:bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.2)] ml-auto">
+                  {step === 2 ? "Configure and Pay" : "Continue"} <ArrowRight className="w-4 h-4" />
                 </Button>
               ) : (
-                <Button onClick={handleComplete} className="bg-foreground text-background rounded-xl font-heading font-bold gap-2 h-12 px-8">
-                  Complete Payment <ArrowRight className="w-4 h-4" />
+                <Button onClick={handleComplete} className="bg-nova-blue text-white rounded-xl font-heading font-bold gap-2 h-12 px-8 hover:bg-nova-blue/90 shadow-[0_0_20px_rgba(77,159,255,0.3)]">
+                  Pay ${product?.price || product?.price_min || "0"} & Setup <ArrowRight className="w-4 h-4" />
                 </Button>
               )}
             </div>
@@ -264,16 +541,86 @@ export default function InstallFlow() {
   );
 }
 
-function StepContent({ title, children }) {
+function StepContent({ title, subtitle, children }) {
   return (
-    <div className="space-y-5">
-      <h2 className="font-heading text-xl font-bold">{title}</h2>
+    <div className="space-y-6">
+      <div className="mb-8">
+        <h2 className="font-heading text-2xl font-bold text-white mb-2">{title}</h2>
+        {subtitle && <p className="text-white/40 text-sm leading-relaxed">{subtitle}</p>}
+      </div>
       {children}
     </div>
   );
 }
 
-// Change #13: Floating label + gradient glow focus + shake on error
+function UploadItem({ title, description, icon: Icon, uploaded, onAction, isInput, value, onChange, placeholder, showUploadButtonForInput }) {
+  return (
+    <div className={`border rounded-2xl p-4 sm:p-5 transition-all duration-300 ${uploaded ? 'border-[#4D9FFF]/50 bg-[#4D9FFF]/5' : 'border-white/10 bg-black/40 hover:border-white/20'}`}>
+       <div className="flex items-start gap-3 sm:gap-4">
+         <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 ${uploaded ? 'bg-[#4D9FFF]/20 text-[#4D9FFF]' : 'bg-white/5 text-white/50'}`}>
+           <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+         </div>
+         <div className="flex-1 pt-0.5 min-w-0">
+           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+             <h4 className="text-sm font-bold text-white flex items-center gap-2 truncate">
+               {title} {uploaded && <Check className="w-4 h-4 text-[#4D9FFF] shrink-0" />}
+             </h4>
+             {(!isInput || uploaded) && (
+               <Button 
+                 variant={uploaded ? "outline" : "default"}
+                 onClick={onAction}
+                 size="sm"
+                 className={`h-8 text-xs rounded-lg shrink-0 w-fit ${uploaded ? 'border-[#4D9FFF]/50 text-[#4D9FFF] hover:bg-[#4D9FFF]/10' : 'bg-white text-black hover:bg-white/90'}`}
+               >
+                 {uploaded ? "Re-upload" : "Upload File"}
+               </Button>
+             )}
+           </div>
+           <p className="text-xs text-white/40 mb-3 truncate sm:whitespace-normal">{description}</p>
+           {isInput && !uploaded && (
+             <div className="flex gap-2">
+               <input 
+                 value={value} 
+                 onChange={(e) => onChange(e.target.value)}
+                 placeholder={placeholder}
+                 className="flex-1 bg-black/50 border border-white/10 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm text-white focus:border-[#4D9FFF] outline-none transition-all"
+               />
+               {showUploadButtonForInput && (
+                 <Button 
+                   onClick={onAction}
+                   size="sm"
+                   className="bg-white text-black hover:bg-white/90 rounded-xl px-4 h-auto text-xs"
+                 >
+                   Upload
+                 </Button>
+               )}
+             </div>
+           )}
+         </div>
+       </div>
+    </div>
+  )
+}
+
+function StatusItem({ active, label, time, icon: Icon, isLast, loading }) {
+  return (
+    <div className="flex gap-4">
+      <div className="relative flex flex-col items-center">
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center z-10 transition-all duration-500 ${active ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'bg-black border-2 border-white/10 text-white/20'}`}>
+          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Icon className="w-4 h-4" />}
+        </div>
+        {!isLast && (
+          <div className={`w-0.5 h-12 transition-all duration-500 ${active ? 'bg-gradient-to-b from-white to-transparent opacity-30' : 'bg-white/10'}`} />
+        )}
+      </div>
+      <div className="pt-2 flex-1">
+        <p className={`font-bold transition-all duration-500 ${active ? 'text-white' : 'text-white/30'}`}>{label}</p>
+        <p className={`text-xs font-mono mt-1 transition-all duration-500 ${active ? 'text-[#4D9FFF]' : 'text-white/20'}`}>{time}</p>
+      </div>
+    </div>
+  );
+}
+
 function InputField({ label, value, onChange, type = "text", placeholder: _placeholder, shake = false }) {
   const hasValue = value && value.length > 0;
   return (
@@ -283,33 +630,34 @@ function InputField({ label, value, onChange, type = "text", placeholder: _place
         value={value || ""}
         onChange={onChange ? (e) => onChange(e.target.value) : undefined}
         placeholder=" "
-        className={`peer w-full px-4 py-3 bg-muted border-0 border-b-2 rounded-xl text-sm font-medium focus:outline-none transition-all
+        className={`peer w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-sm font-medium focus:outline-none transition-all
           ${shake ? 'animate-shake' : ''}
         `}
         style={{
-          borderBottomColor: 'rgba(255,255,255,0.15)',
-          background: 'rgba(255,255,255,0.04)',
           color: 'white',
           boxShadow: 'none',
         }}
         onFocus={e => {
-          e.target.style.borderBottomColor = '#4D9FFF';
-          e.target.style.boxShadow = '0 2px 0 0 rgba(77,159,255,0.3), 0 8px 24px rgba(77,159,255,0.08)';
+          e.target.style.borderColor = '#4D9FFF';
+          e.target.style.boxShadow = '0 0 0 1px #4D9FFF';
         }}
         onBlur={e => {
-          e.target.style.borderBottomColor = 'rgba(255,255,255,0.15)';
+          e.target.style.borderColor = 'rgba(255,255,255,0.1)';
           e.target.style.boxShadow = 'none';
         }}
       />
       <label
         className="absolute left-4 text-white/40 pointer-events-none font-medium transition-all duration-200"
         style={{
-          top: hasValue ? '2px' : '26px',
-          fontSize: hasValue ? '0.6rem' : '0.875rem',
+          top: hasValue ? '-2px' : '30px',
+          fontSize: hasValue ? '0.7rem' : '0.875rem',
           color: hasValue ? '#4D9FFF' : 'rgba(255,255,255,0.35)',
-          letterSpacing: hasValue ? '0.08em' : '0',
+          letterSpacing: hasValue ? '0.05em' : '0',
           textTransform: hasValue ? 'uppercase' : 'none',
           fontWeight: hasValue ? 700 : 400,
+          background: hasValue ? 'rgba(0,0,0,0.8)' : 'transparent',
+          padding: hasValue ? '0 4px' : '0',
+          borderRadius: '4px'
         }}
       >
         {label}
