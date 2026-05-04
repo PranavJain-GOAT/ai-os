@@ -12,7 +12,7 @@ export default function AddProduct() {
     const [saving, setSaving] = useState(false);
     const [loading, setLoading] = useState(isEdit);
     const [form, setForm] = useState({
-        title: "", description: "", price_min: "", price_max: "",
+        title: "", description: "", price: "",
         category: "chatbot", delivery_days: 5, demo_url: "",
         features: [], whats_included: [], whats_not_included: [],
         who_its_for: [], what_it_does: "", customization_options: [],
@@ -32,7 +32,7 @@ export default function AddProduct() {
                     const s = items[0];
                     setForm({
                         title: s.title || "", description: s.description || "",
-                        price_min: s.price_min || "", price_max: s.price_max || "",
+                        price: s.price_min || s.price_max || "",
                         category: s.category || "chatbot", delivery_days: s.delivery_days || 5,
                         demo_url: s.demo_url || "", features: s.features || [],
                         whats_included: s.whats_included || [], whats_not_included: s.whats_not_included || [],
@@ -52,8 +52,8 @@ export default function AddProduct() {
         setSaving(true);
         const data = {
             ...form,
-            price_min: Number(form.price_min),
-            price_max: Number(form.price_max),
+            price_min: Number(form.price),
+            price_max: Number(form.price),
             delivery_days: Number(form.delivery_days),
             status: "active",
         };
@@ -111,16 +111,11 @@ export default function AddProduct() {
                         placeholder="Describe what your product does and its benefits" />
                 </Field>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <Field label="Min Price ($)" required>
-                        <input type="number" value={form.price_min} onChange={(e) => setForm((p) => ({ ...p, price_min: e.target.value }))} required
-                            className="w-full px-4 py-3 bg-muted border-2 border-transparent focus:border-foreground rounded-xl text-sm font-medium focus:outline-none transition-colors" />
-                    </Field>
-                    <Field label="Max Price ($)" required>
-                        <input type="number" value={form.price_max} onChange={(e) => setForm((p) => ({ ...p, price_max: e.target.value }))} required
-                            className="w-full px-4 py-3 bg-muted border-2 border-transparent focus:border-foreground rounded-xl text-sm font-medium focus:outline-none transition-colors" />
-                    </Field>
-                </div>
+                <Field label="Price ($)" required>
+                    <input type="number" value={form.price} onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))} required
+                        className="w-full px-4 py-3 bg-muted border-2 border-transparent focus:border-foreground rounded-xl text-sm font-medium focus:outline-none transition-colors"
+                        placeholder="e.g. 49" />
+                </Field>
 
                 <div className="grid grid-cols-2 gap-4">
                     <Field label="Category">

@@ -8,6 +8,7 @@ import {
   ArrowUpRight, Sparkles, Radio
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 /* ════════════════════════════════════════════════════════════
    MOCK DATA
@@ -21,6 +22,15 @@ const MOCK_ORDERS = [
 ];
 
 const SPARKLINE_DATA = [22, 38, 31, 55, 48, 71, 88];
+
+const MONTHLY_DATA = [
+  { month: "Jan", revenue: 1200, installs: 8 },
+  { month: "Feb", revenue: 1800, installs: 12 },
+  { month: "Mar", revenue: 2400, installs: 18 },
+  { month: "Apr", revenue: 3100, installs: 22 },
+  { month: "May", revenue: 2800, installs: 20 },
+  { month: "Jun", revenue: 3600, installs: 28 },
+];
 
 const ACTIVITY_LOG = [
   { time: "10:25:30", event: "New Install: WhatsApp Bot",       type: "install" },
@@ -70,6 +80,72 @@ function Sparkline({ data, color = "hsl(var(--foreground))", width = 80, height 
       <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="2.5"
         fill={color} style={{ filter: `drop-shadow(0 0 6px ${color})` }} />
     </svg>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════
+   ANIMATED LINE CHART (Installs over months)
+════════════════════════════════════════════════════════════ */
+function AnimatedLineChart({ data }) {
+  const [progress, setProgress] = useState(0);
+  const [hoveredPoint, setHoveredPoint] = useState(null);
+  const svgRef = useRef(null);
+  const W = 420, H = 200, PAD = { t: 20, r: 20, b: 30, l: 35 };
+  const maxVal = Math.max(...data.map(d => d.installs));
+  const xs = data.map((_, i) => PAD.l + (i / (data.length - 1)) * (W - PAD.l - PAD.r));
+  const ys = data.map(d => PAD.t + (1 - d.installs / maxVal) * (H - PAD.t - PAD.b));
+  const pathD = xs.map((x, i) => `${i === 0 ? "M" : "L"} ${x} ${ys[i]}`).join(" ");
+  const fillD = pathD + ` L ${xs[xs.length - 1]} ${H - PAD.b} L ${xs[0]} ${H - PAD.b} Z`;
+  useEffect(() => {
+    let start = null;
+    const step = (ts) => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / 1400, 1);
+      setProgress(p);
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, []);
+  const pathEl = svgRef.current?.querySelector(".anim-path");
+  const pathLength = pathEl ? pathEl.getTotalLength() : 600;
+  return (
+    <div className="relative w-full h-full">
+      <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="w-full h-full" style={{ overflow: "visible" }}>
+        <defs>
+          <linearGradient id="fillGradDash" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="hsl(var(--foreground))" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="hsl(var(--foreground))" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {[0, 0.25, 0.5, 0.75, 1].map((t, i) => {
+          const y = PAD.t + t * (H - PAD.t - PAD.b);
+          return <line key={i} x1={PAD.l} y1={y} x2={W - PAD.r} y2={y} stroke="hsl(var(--foreground) / 0.08)" strokeWidth="1" />;
+        })}
+        {data.map((d, i) => (
+          <text key={i} x={xs[i]} y={H - 8} textAnchor="middle" fill="hsl(var(--foreground) / 0.4)" fontSize="11" fontFamily="monospace">{d.month}</text>
+        ))}
+        <path d={fillD} fill="url(#fillGradDash)" opacity={progress} />
+        <path className="anim-path" d={pathD} fill="none" stroke="hsl(var(--foreground))" strokeWidth="2.5"
+          strokeDasharray={pathLength} strokeDashoffset={pathLength * (1 - progress)} strokeLinecap="round" />
+        {xs.map((x, i) => (
+          <g key={i} onMouseEnter={() => setHoveredPoint(i)} onMouseLeave={() => setHoveredPoint(null)}>
+            <circle cx={x} cy={ys[i]} r="10" fill="transparent" />
+            <circle cx={x} cy={ys[i]} r={hoveredPoint === i ? 6 : 3.5}
+              fill={hoveredPoint === i ? "white" : "hsl(var(--foreground))"}
+              stroke="hsl(var(--foreground))" strokeWidth="2" />
+            {hoveredPoint === i && (
+              <g>
+                <rect x={x - 26} y={ys[i] - 33} width="52" height="20" rx="5"
+                  fill="rgba(0,0,0,0.85)" stroke="rgba(150,150,150,0.4)" strokeWidth="0.5" />
+                <text x={x} y={ys[i] - 19} textAnchor="middle" fill="white" fontSize="11" fontWeight="700" fontFamily="monospace">
+                  {data[i].installs}
+                </text>
+              </g>
+            )}
+          </g>
+        ))}
+      </svg>
+    </div>
   );
 }
 
@@ -386,63 +462,17 @@ export default function Dashboard() {
     <div className={`${compact ? "p-4 sm:p-5" : "p-6 sm:p-8"} max-w-6xl page-fade-in`}>
 
       {/* ── Header ── */}
-      <div className="flex items-start justify-between mb-8">
-        <div>
-          <div className="stat-label-caps mb-2">Developer Command Center</div>
-          <h1
-            className="text-white font-bold text-2xl sm:text-3xl section-title-gradient"
-            style={{ fontFamily: "Georgia, serif", letterSpacing: "-0.04em", lineHeight: 1.1 }}
-          >
-            Dashboard
-          </h1>
-          <p className="text-sm mt-2" style={{ color: "hsl(var(--foreground) / 0.35)", fontFamily: "'Inter', sans-serif" }}>
-            Real-time overview of your products and revenue
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setCompact((p) => !p)}
-            className="px-3 py-2 rounded-xl text-xs font-semibold transition-all"
-            style={{
-              background: compact ? "rgba(150,150,150,0.1)" : "hsl(var(--foreground) / 0.04)",
-              color: compact ? "hsl(var(--foreground))" : "hsl(var(--foreground) / 0.4)",
-              border: compact ? "0.5px solid rgba(150,150,150,0.25)" : "0.5px solid hsl(var(--foreground) / 0.07)",
-              fontFamily: "'Inter', sans-serif",
-              letterSpacing: "0.04em",
-            }}
-          >
-            {compact ? "⠿ Compact" : "⠿ Comfy"}
-          </button>
-
-          <button
-            onClick={() => setShowConsole(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all"
-            style={{
-              background: "hsl(var(--foreground) / 0.04)",
-              color: "hsl(var(--foreground) / 0.4)",
-              border: "0.5px solid hsl(var(--foreground) / 0.07)",
-              fontFamily: "'Inter', sans-serif",
-            }}
-          >
-            <Terminal className="w-3.5 h-3.5" /> Console
-          </button>
-
-          <Link to="/developer/add">
-            <button
-              className="flex items-center gap-2 text-white font-bold text-xs px-5 py-2.5 rounded-xl shimmer-btn transition-all"
-              style={{
-                background: "linear-gradient(135deg, hsl(var(--foreground)), hsl(var(--foreground)))",
-                boxShadow: "0 0 20px rgba(150,150,150,0.35)",
-                fontFamily: "'Inter', sans-serif",
-                letterSpacing: "0.04em",
-              }}
-            >
-              <Plus className="w-3.5 h-3.5" />
-              Add Product
-            </button>
-          </Link>
-        </div>
+      <div className="mb-8">
+        <div className="stat-label-caps mb-2">Developer Command Center</div>
+        <h1
+          className="text-white font-bold text-2xl sm:text-3xl section-title-gradient"
+          style={{ fontFamily: "Georgia, serif", letterSpacing: "-0.04em", lineHeight: 1.1 }}
+        >
+          Dashboard
+        </h1>
+        <p className="text-sm mt-2" style={{ color: "hsl(var(--foreground) / 0.35)", fontFamily: "'Inter', sans-serif" }}>
+          Real-time overview of your products and revenue
+        </p>
       </div>
 
       {/* ── Stat Cards ── */}
@@ -455,39 +485,34 @@ export default function Dashboard() {
             transition={{ delay: i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className={`premium-stat-card ${compact ? "p-4" : "p-5"} cursor-pointer`}
             style={{
-              background: `linear-gradient(135deg, ${s.bg} 0%, rgba(0,0,0,0.8) 100%)`,
-              border: `0.5px solid ${s.color}20`,
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
+              background: "white",
+              border: "0.5px solid rgba(0,0,0,0.08)",
             }}
-            whileHover={{ y: -5, boxShadow: `0 20px 60px rgba(0,0,0,0.7), 0 0 0 0.5px ${s.color}35 inset` }}
+            whileHover={{ y: -5, boxShadow: "0 8px 32px rgba(0,0,0,0.1)" }}
             onClick={() => s.label === "Revenue" && setChartMode((p) => !p)}
           >
-            {/* Glow stamp */}
-            <div className="kpi-glow-stamp" style={{ background: s.color }} />
-
             <div className="flex items-start justify-between mb-3 relative z-10">
               <div
                 className="w-9 h-9 rounded-xl flex items-center justify-center"
-                style={{ background: `${s.color}18`, border: `0.5px solid ${s.color}30` }}
+                style={{ background: "rgba(0,0,0,0.05)", border: "0.5px solid rgba(0,0,0,0.1)" }}
               >
-                <s.icon className="w-4 h-4" style={{ color: s.color }} />
+                <s.icon className="w-4 h-4" style={{ color: "rgba(0,0,0,0.6)" }} />
               </div>
               {s.sparkData ? (
-                <Sparkline data={s.sparkData} color={s.color} />
+                <Sparkline data={s.sparkData} color="rgba(0,0,0,0.5)" />
               ) : s.trend ? (
-                <span className="trend-chip-up">{s.trend}</span>
+                <span className="trend-chip-up" style={{ background: "rgba(0,0,0,0.05)", color: "rgba(0,0,0,0.6)", border: "0.5px solid rgba(0,0,0,0.1)" }}>{s.trend}</span>
               ) : null}
             </div>
 
             <div className="relative z-10">
               <div
                 className={`font-bold metric-num mb-0.5 ${compact ? "text-xl" : "text-2xl"}`}
-                style={{ color: s.color }}
+                style={{ color: "hsl(0,0%,8%)" }}
               >
                 {s.value}
               </div>
-              <div className="text-xs font-medium" style={{ color: "hsl(var(--foreground) / 0.7)", fontFamily: "'Inter', sans-serif" }}>
+              <div className="text-xs font-medium" style={{ color: "rgba(0,0,0,0.65)", fontFamily: "'Inter', sans-serif" }}>
                 {s.label}
               </div>
               {!compact && (
@@ -671,6 +696,80 @@ export default function Dashboard() {
 
       {/* Dev Console Modal */}
       {showConsole && <DevConsole onClose={() => setShowConsole(false)} />}
+
+      {/* ══════════════════════════════════════════════
+          ANALYTICS SECTION — Revenue & Installs
+      ══════════════════════════════════════════════ */}
+      <div className="mt-8">
+        {/* Section header */}
+        <div className="flex items-center gap-3 mb-5">
+          <div className="stat-label-caps">Analytics Overview</div>
+          <div className="flex-1 h-px" style={{ background: "rgba(0,0,0,0.07)" }} />
+        </div>
+
+        {/* Summary stat cards */}
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          {[
+            { label: "Total Revenue", value: `$${orders.filter(o => o.status === "paid" || o.status === "installed").reduce((s,o) => s + (o.amount||0), 0).toLocaleString()}` },
+            { label: "Total Orders",  value: orders.length },
+            { label: "Conversion Rate", value: orders.length > 0 ? `${Math.round((orders.filter(o => o.status==="paid"||o.status==="installed").length / orders.length) * 100)}%` : "0%" },
+          ].map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 + 0.2 }}
+              className="premium-stat-card p-5"
+              style={{ background: "white", border: "0.5px solid rgba(0,0,0,0.08)" }}
+            >
+              <div className="stat-label-caps mb-2">{s.label}</div>
+              <div className="text-2xl font-bold metric-num" style={{ color: "hsl(0,0%,8%)", fontFamily: "Georgia, serif", letterSpacing: "-0.03em" }}>
+                {s.value}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {/* Revenue Bar Chart */}
+          <div className="frosted-panel p-5">
+            <h3 className="font-bold mb-4" style={{ fontFamily: "Georgia, serif", fontSize: "0.9rem", color: "hsl(0,0%,8%)" }}>
+              Revenue — 6 Month
+            </h3>
+            <div style={{ height: 200 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={MONTHLY_DATA} margin={{ top: 4, right: 4, bottom: 0, left: -10 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: "rgba(0,0,0,0.4)" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: "rgba(0,0,0,0.4)" }} axisLine={false} tickLine={false} />
+                  <Tooltip
+                    contentStyle={{ background: "#fff", color: "#111", border: "0.5px solid rgba(0,0,0,0.12)", borderRadius: "10px", fontSize: "12px", fontWeight: 600, boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}
+                    formatter={(v) => [`$${v.toLocaleString()}`, "Revenue"]}
+                  />
+                  <defs>
+                    <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--foreground))" stopOpacity={0.85} />
+                      <stop offset="100%" stopColor="hsl(var(--foreground))" stopOpacity={0.5} />
+                    </linearGradient>
+                  </defs>
+                  <Bar dataKey="revenue" fill="url(#revGrad)" radius={[5, 5, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Installs Line Chart */}
+          <div className="frosted-panel p-5">
+            <h3 className="font-bold mb-4" style={{ fontFamily: "Georgia, serif", fontSize: "0.9rem", color: "hsl(0,0%,8%)" }}>
+              Installs — 6 Month
+            </h3>
+            <div style={{ height: 200 }}>
+              <AnimatedLineChart data={MONTHLY_DATA} />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

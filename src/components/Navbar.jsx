@@ -1,22 +1,19 @@
 import { Link, useLocation } from "react-router-dom";
-import { Search, Menu, X, Code2, Zap } from "lucide-react";
+import { Search, Menu, X, Code2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LiveSearch from "./home/LiveSearch";
-import { useSoundManager } from "./SoundManager";
-import ThemeToggle from "./ThemeToggle";
 import { useTheme } from "@/lib/ThemeContext";
 
 function GlitchLink({ to, label, onClick }) {
   const [glitching, setGlitching] = useState(false);
   const location = useLocation();
   const active = location.pathname === to;
-  const { play } = useSoundManager();
   const { isDark } = useTheme();
   return (
     <Link
       to={to}
-      onClick={() => { play('whoosh'); onClick?.(); }}
+      onClick={() => { onClick?.(); }}
       onMouseEnter={() => { setGlitching(true); setTimeout(() => setGlitching(false), 400); }}
       className={`relative text-xs font-medium transition-colors px-3 py-1.5 rounded-full overflow-hidden select-none ${active
           ? isDark
@@ -130,9 +127,6 @@ export default function Navbar() {
 
             {/* CTAs */}
             <div className="flex items-center gap-2 shrink-0 ml-auto z-50">
-              {/* Theme Toggle */}
-              <ThemeToggle />
-
               <Link to="/auth" className="hidden sm:flex">
                 <motion.button
                   whileHover={{ scale: 1.04 }}
@@ -144,20 +138,6 @@ export default function Navbar() {
                 >
                   <Code2 className="w-3 h-3 hidden sm:block" />
                   Sign In
-                </motion.button>
-              </Link>
-              <Link to="/" className="hidden sm:block">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.96 }}
-                  className="shimmer-btn flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-full transition-all"
-                  style={{
-                    background: isDark ? '#ffffff' : '#0a0a0a',
-                    color: isDark ? '#000000' : '#ffffff',
-                  }}
-                >
-                  <Zap className="w-3 h-3 hidden sm:block" />
-                  <span className="text-[10px] sm:text-xs">Browse</span>
                 </motion.button>
               </Link>
               <button

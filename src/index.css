@@ -1542,16 +1542,11 @@ p,
   z-index: 0;
 }
 .premium-stat-card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-  pointer-events: none;
+  content: none; /* removed glitter shimmer line */
 }
 .premium-stat-card:hover {
   transform: translateY(-5px) scale(1.01);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 0.5px rgba(255,255,255,0.12) inset;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.1) inset;
 }
 
 /* ─── Premium Table Row ─── */
@@ -1588,17 +1583,10 @@ p,
 
 /* ─── KPI Card Glow Stamp ─── */
 .kpi-glow-stamp {
-  position: absolute;
-  top: -30px; right: -30px;
-  width: 120px; height: 120px;
-  border-radius: 50%;
-  opacity: 0.12;
-  filter: blur(30px);
-  transition: opacity 0.4s ease;
-  pointer-events: none;
+  display: none; /* removed glitter glow stamp */
 }
 .premium-stat-card:hover .kpi-glow-stamp {
-  opacity: 0.22;
+  display: none;
 }
 
 /* ─── Aurora Header ─── */
@@ -1866,7 +1854,7 @@ p,
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.18);
+  color: hsl(var(--foreground) / 0.35);
   padding: 12px 16px 6px;
 }
 
@@ -2190,4 +2178,288 @@ p,
 
 .light .radial-card::after {
   background: radial-gradient(circle, rgba(150,150,150,0.07) 0%, transparent 70%);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD LIGHT THEME — Forced white bg + dark text
+   Scoped to both client and developer dashboard roots
+═══════════════════════════════════════════════════════════ */
+
+#client-dashboard-root,
+#dev-dashboard-root {
+  /* Override CSS variables to light theme values */
+  --background: 0 0% 97%;
+  --foreground: 0 0% 8%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 8%;
+  --border: 0 0% 88%;
+  --muted: 0 0% 93%;
+  --muted-foreground: 0 0% 40%;
+  --accent: 0 0% 93%;
+  --accent-foreground: 0 0% 8%;
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 0 0% 20%;
+  --sidebar-border: 0 0% 88%;
+
+  background-color: hsl(0, 0%, 97%);
+  color: hsl(0, 0%, 8%);
+}
+
+/* Sidebar glass — white with subtle border */
+#client-dashboard-root .client-sidebar-glass,
+#dev-dashboard-root .client-sidebar-glass {
+  background: rgba(255, 255, 255, 0.92);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  border-image: none;
+}
+
+/* Frosted panel — light */
+#client-dashboard-root .frosted-panel,
+#dev-dashboard-root .frosted-panel {
+  background: rgba(255, 255, 255, 0.9);
+  border: 0.5px solid rgba(0, 0, 0, 0.08);
+  border-top-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+/* Premium stat cards — white boxes */
+#client-dashboard-root .premium-stat-card,
+#dev-dashboard-root .premium-stat-card {
+  background: white !important;
+  border: 0.5px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+#client-dashboard-root .premium-stat-card:hover,
+#dev-dashboard-root .premium-stat-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+/* Disable the top shimmer gradient on dashboard */
+#client-dashboard-root .premium-stat-card::before,
+#dev-dashboard-root .premium-stat-card::before {
+  display: none;
+}
+
+/* Dev glass cards — white */
+#dev-dashboard-root .dev-glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 0.5px solid rgba(0, 0, 0, 0.08);
+  border-top-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+#dev-dashboard-root .dev-glass-card:hover {
+  border-color: rgba(0, 0, 0, 0.16);
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* All white/text-white hardcoded text — override to dark */
+#client-dashboard-root .text-white,
+#dev-dashboard-root .text-white {
+  color: hsl(0, 0%, 8%) !important;
+}
+#client-dashboard-root .text-white\/25,
+#dev-dashboard-root .text-white\/25 {
+  color: rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Section title gradient — dark on light */
+#client-dashboard-root .section-title-gradient,
+#dev-dashboard-root .section-title-gradient {
+  background: linear-gradient(135deg, hsl(0, 0%, 5%) 0%, hsl(0, 0%, 20%) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Aurora header — light */
+#client-dashboard-root .aurora-header,
+#dev-dashboard-root .aurora-header {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border: 0.5px solid rgba(0, 0, 0, 0.06) !important;
+}
+#client-dashboard-root .aurora-header::before,
+#dev-dashboard-root .aurora-header::before {
+  display: none;
+}
+
+/* Stat label caps */
+#client-dashboard-root .stat-label-caps,
+#dev-dashboard-root .stat-label-caps {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+/* Premium badge — dark border on light */
+#client-dashboard-root .premium-badge-monochrome,
+#dev-dashboard-root .premium-badge-monochrome {
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.7);
+  border: 0.5px solid rgba(0, 0, 0, 0.15);
+}
+
+/* Cyber tags — dark on light */
+#client-dashboard-root .cyber-tag,
+#dev-dashboard-root .cyber-tag {
+  border-color: rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.04);
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Health bar track */
+#client-dashboard-root .health-bar-track,
+#dev-dashboard-root .health-bar-track {
+  background: rgba(0, 0, 0, 0.07);
+}
+
+/* Premium table */
+#client-dashboard-root .premium-table th,
+#dev-dashboard-root .premium-table th {
+  color: rgba(0, 0, 0, 0.35);
+  border-bottom-color: rgba(0, 0, 0, 0.07);
+}
+#client-dashboard-root .premium-table td,
+#dev-dashboard-root .premium-table td {
+  color: rgba(0, 0, 0, 0.75);
+  border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+#client-dashboard-root .premium-table tr:hover td,
+#dev-dashboard-root .premium-table tr:hover td {
+  color: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* Premium row */
+#client-dashboard-root .premium-row:hover,
+#dev-dashboard-root .premium-row:hover {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Admin KPI card */
+#dev-dashboard-root .admin-kpi-card::after {
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.06), transparent);
+}
+
+/* Separator lines */
+#client-dashboard-root .card-separator,
+#dev-dashboard-root .card-separator {
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.06) 30%, rgba(0, 0, 0, 0.06) 70%, transparent);
+}
+
+/* Premium header bar */
+#client-dashboard-root .premium-header-bar,
+#dev-dashboard-root .premium-header-bar {
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.07);
+}
+
+/* Workflow node boxes */
+#client-dashboard-root .workflow-node-box,
+#dev-dashboard-root .workflow-node-box {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Mobile header / drawer — override dark bg */
+#client-dashboard-root [style*="rgba(0,0,0,0.9)"],
+#dev-dashboard-root [style*="rgba(0,0,0,0.9)"] {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+#client-dashboard-root [style*="rgba(0,0,0,0.97)"],
+#dev-dashboard-root [style*="rgba(0,0,0,0.97)"] {
+  background: rgba(255, 255, 255, 0.99) !important;
+}
+
+/* Orbs — very subtle on white bg */
+#client-dashboard-root .client-orb-1 {
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.04) 0%, transparent 70%);
+}
+#client-dashboard-root .client-orb-2 {
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.03) 0%, transparent 70%);
+}
+
+/* Sidebar logo mark */
+#client-dashboard-root .logo-mark::after,
+#dev-dashboard-root .logo-mark::after {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.1) 0%, transparent 60%);
+}
+
+/* Admin table rows */
+#dev-dashboard-root .admin-table-row:hover {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Radial card — remove glowy shadow on dashboards */
+#client-dashboard-root .radial-card,
+#dev-dashboard-root .radial-card {
+  background: white;
+  border: 0.5px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+}
+#client-dashboard-root .radial-card:hover,
+#dev-dashboard-root .radial-card:hover {
+  border-color: rgba(0, 0, 0, 0.14) !important;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.09) !important;
+  transform: translateY(-3px) scale(1.003);
+}
+#client-dashboard-root .radial-card::after,
+#dev-dashboard-root .radial-card::after {
+  display: none;
+}
+
+/* Sidebar avatar — invert on light bg */
+#client-dashboard-root .sidebar-avatar,
+#dev-dashboard-root .sidebar-avatar {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+/* HUD / bottom action bar — light */
+#client-dashboard-root .client-hud {
+  background: rgba(255, 255, 255, 0.92);
+  border: 0.5px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+#client-dashboard-root .hud-btn {
+  color: rgba(0, 0, 0, 0.6);
+}
+#client-dashboard-root .hud-btn:hover {
+  color: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.04);
+}
+#client-dashboard-root .hud-primary {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.8);
+}
+#client-dashboard-root .hud-divider {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* CMDK modal — light */
+#client-dashboard-root .cmdk-modal,
+#dev-dashboard-root .cmdk-modal {
+  background: rgba(255, 255, 255, 0.97);
+  border: 0.5px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+#client-dashboard-root .cmdk-input,
+#dev-dashboard-root .cmdk-input {
+  color: rgba(0, 0, 0, 0.85);
+  background: transparent;
+}
+#client-dashboard-root .cmdk-input::placeholder,
+#dev-dashboard-root .cmdk-input::placeholder {
+  color: rgba(0, 0, 0, 0.3);
+}
+#client-dashboard-root .cmdk-result,
+#dev-dashboard-root .cmdk-result {
+  color: rgba(0, 0, 0, 0.75);
+}
+#client-dashboard-root .cmdk-result:hover,
+#dev-dashboard-root .cmdk-result:hover,
+#client-dashboard-root .cmdk-result.active,
+#dev-dashboard-root .cmdk-result.active {
+  background: rgba(0, 0, 0, 0.04);
+  color: rgba(0, 0, 0, 0.9);
+}
+#client-dashboard-root .cmdk-backdrop,
+#dev-dashboard-root .cmdk-backdrop {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
 }

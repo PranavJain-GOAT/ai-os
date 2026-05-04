@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { MOCK_PRODUCTS } from "@/api/mockData";
 import { Link } from "react-router-dom";
-import { Plus, Edit, Trash2, Eye } from "lucide-react";
+import { Edit, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
@@ -33,17 +33,9 @@ export default function Listings() {
 
   return (
     <div className="p-6 sm:p-8 max-w-6xl">
-      <div className="flex items-center justify-between mb-8">
-        <div>
+      <div className="mb-8">
           <h1 className="font-heading text-2xl sm:text-3xl font-bold">My Listings</h1>
           <p className="text-muted-foreground text-sm mt-1">{solutions.length} products listed</p>
-        </div>
-        <Link to="/developer/add">
-          <Button className="bg-foreground text-background font-heading font-bold rounded-xl gap-2">
-            <Plus className="w-4 h-4" />
-            Add Product
-          </Button>
-        </Link>
       </div>
 
       {solutions.length === 0 ? (

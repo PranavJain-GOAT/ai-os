@@ -4,7 +4,6 @@ import {
   CreditCard, ArrowLeft, Puzzle, Crown, Zap, BarChart2
 } from "lucide-react";
 import { useRef } from "react";
-import DashboardToggle from "@/components/shared/DashboardToggle";
 
 const NAV_GROUPS = [
   {
@@ -56,7 +55,7 @@ function MagneticNavItem({ item, isActive }) {
       onMouseLeave={handleMouseLeave}
       title={item.hint}
       className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all relative group ${
-        isActive ? "text-foreground" : "text-foreground/40 hover:text-foreground/80"
+        isActive ? "text-foreground" : "text-foreground/60 hover:text-foreground/90"
       }`}
       style={{
         background: isActive
@@ -167,7 +166,6 @@ export default function ClientSidebar({ vipMode, onVipToggle }) {
 
       {/* Bottom — Dashboard Mode Switcher + VIP Toggle */}
       <div className="border-t border-border p-4 space-y-3">
-        <DashboardToggle />
         <button
           onClick={onVipToggle}
           className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all group border ${vipMode ? 'bg-foreground/5 border-foreground/30' : 'border-transparent hover:bg-foreground/5'}`}

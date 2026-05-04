@@ -1,22 +1,15 @@
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import DevSidebar from "./DevSidebar";
 import {
-  Menu, X, LayoutDashboard, Package, Plus, BarChart3,
-  ArrowLeft, MessageSquare, User, Command, Search,
-  Key, Webhook, Terminal, FlaskConical
+  Menu, X, LayoutDashboard, Package, Plus,
+  ArrowLeft, MessageSquare, User, Command, Search
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import DashboardToggle from "@/components/shared/DashboardToggle";
 
 const NAV_ITEMS = [
   { path: "/developer",            label: "Dashboard",    icon: LayoutDashboard },
   { path: "/developer/listings",   label: "My Listings",  icon: Package },
   { path: "/developer/add",        label: "Add Product",  icon: Plus },
-  { path: "/developer/analytics",  label: "Analytics",    icon: BarChart3 },
-  { path: "/developer/api-vault",  label: "API Vault",    icon: Key },
-  { path: "/developer/webhooks",   label: "Webhooks",     icon: Webhook },
-  { path: "/developer/logs",       label: "Logs",         icon: Terminal },
-  { path: "/developer/sandbox",    label: "AI Sandbox",   icon: FlaskConical },
   { path: "/developer/messages",   label: "Messages",     icon: MessageSquare },
   { path: "/developer/profile",    label: "Profile",      icon: User },
 ];
@@ -25,11 +18,6 @@ const CMDK_COMMANDS = [
   { label: "Dashboard",       path: "/developer",            hint: "Home",      icon: LayoutDashboard },
   { label: "My Listings",     path: "/developer/listings",   hint: "Products",  icon: Package },
   { label: "New Product",     path: "/developer/add",        hint: "NP",        icon: Plus },
-  { label: "Analytics",       path: "/developer/analytics",  hint: "Charts",    icon: BarChart3 },
-  { label: "API Vault",       path: "/developer/api-vault",  hint: "Keys",      icon: Key },
-  { label: "Webhooks",        path: "/developer/webhooks",   hint: "Hooks",     icon: Webhook },
-  { label: "Logs & Debugger", path: "/developer/logs",       hint: "Debug",     icon: Terminal },
-  { label: "AI Sandbox",      path: "/developer/sandbox",    hint: "Test",      icon: FlaskConical },
   { label: "Messages",        path: "/developer/messages",   hint: "Chat",      icon: MessageSquare },
   { label: "Profile",         path: "/developer/profile",    hint: "Settings",  icon: User },
 ];
@@ -94,10 +82,7 @@ export default function DevLayout() {
   };
 
   return (
-    <div className="flex min-h-screen relative" style={{ background: "transparent" }}>
-
-      {/* ── Neural particle background ── */}
-      <NeuralBg />
+    <div id="dev-dashboard-root" className="flex min-h-screen relative" style={{ background: "#f7f7f7" }}>
 
       {/* Sidebar */}
       <div style={{ position: "relative", zIndex: 10 }}>
@@ -118,8 +103,6 @@ export default function DevLayout() {
             </div>
             <span className="text-white font-bold text-sm" style={{ fontFamily: "Georgia, serif" }}>Developer Hub</span>
           </div>
-          {/* Mode toggle for dual-role mobile users */}
-          <DashboardToggle compact />
           <button onClick={() => setMobileOpen(!mobileOpen)} className="text-white/50 hover:text-white transition-colors">
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -161,7 +144,7 @@ export default function DevLayout() {
           </div>
         )}
 
-        <main className="flex-1 overflow-auto pb-10">
+        <main className="flex-1 overflow-auto pb-10 relative">
           <Outlet />
         </main>
       </div>

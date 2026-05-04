@@ -96,8 +96,8 @@ function BentoGrid() {
   const stats = [
     {
       label: "Active Agents",
-      value: "2",
-      sub: "of 2 running",
+      value: PURCHASES.filter((p) => p.active).length,
+      sub: `of ${PURCHASES.length} total`,
       icon: Bot,
       color: "hsl(var(--foreground))",
       bg: "rgba(150,150,150,0.07)",
@@ -130,31 +130,28 @@ function BentoGrid() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.08, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           style={{
-            background: `linear-gradient(135deg, ${s.bg} 0%, rgba(0,0,0,0.8) 100%)`,
-            border: `0.5px solid ${s.color}20`,
+            background: "white",
+            border: "0.5px solid rgba(0,0,0,0.08)",
           }}
-          whileHover={{ y: -4, boxShadow: `0 16px 48px rgba(0,0,0,0.7), 0 0 0 0.5px ${s.color}30 inset` }}
+          whileHover={{ y: -4, boxShadow: "0 8px 32px rgba(0,0,0,0.1)" }}
         >
-          {/* Glow stamp */}
-          <div className="kpi-glow-stamp" style={{ background: s.color }} />
-
           <div className="flex items-start justify-between mb-3 relative z-10">
             <div
               className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: `${s.color}18`, border: `0.5px solid ${s.color}30` }}
+              style={{ background: "rgba(0,0,0,0.05)", border: "0.5px solid rgba(0,0,0,0.1)" }}
             >
-              <s.icon className="w-4 h-4" style={{ color: s.color }} />
+              <s.icon className="w-4 h-4" style={{ color: "rgba(0,0,0,0.6)" }} />
             </div>
-            <ArrowUpRight className="w-3.5 h-3.5" style={{ color: "hsl(var(--foreground) / 0.12)" }} />
+            <ArrowUpRight className="w-3.5 h-3.5" style={{ color: "rgba(0,0,0,0.2)" }} />
           </div>
           <div className="relative z-10">
             <div
               className="text-2xl font-bold mb-0.5 metric-num"
-              style={{ color: s.color, letterSpacing: "-0.03em", fontFamily: "Georgia, serif" }}
+              style={{ color: "hsl(0,0%,8%)", letterSpacing: "-0.03em", fontFamily: "Georgia, serif" }}
             >
               {s.value}
             </div>
-            <div className="text-xs font-semibold" style={{ color: "hsl(var(--foreground) / 0.8)", fontFamily: "'Inter', sans-serif" }}>
+            <div className="text-xs font-semibold" style={{ color: "rgba(0,0,0,0.75)", fontFamily: "'Inter', sans-serif" }}>
               {s.label}
             </div>
             <div className="stat-label-caps mt-1">{s.sub}</div>
@@ -369,11 +366,9 @@ export function PurchaseHistory() {
             <div
               className="rounded-2xl p-5 transition-all"
               style={{
-                background: p.active
-                  ? "linear-gradient(135deg, rgba(150,150,150,0.06) 0%, rgba(0,0,0,0.8) 100%)"
-                  : "hsl(var(--foreground) / 0.02)",
-                border: p.active ? "0.5px solid rgba(150,150,150,0.18)" : "0.5px solid hsl(var(--foreground) / 0.07)",
-                backdropFilter: "blur(12px)",
+                background: "white",
+                border: p.active ? "0.5px solid rgba(0,0,0,0.1)" : "0.5px solid rgba(0,0,0,0.07)",
+                boxShadow: p.active ? "0 2px 16px rgba(0,0,0,0.08)" : "0 1px 8px rgba(0,0,0,0.05)",
               }}
             >
               {/* Header row */}
@@ -382,16 +377,16 @@ export function PurchaseHistory() {
                   <div
                     className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{
-                      background: p.active ? "rgba(150,150,150,0.12)" : "hsl(var(--foreground) / 0.06)",
-                      border: p.active ? "0.5px solid rgba(150,150,150,0.25)" : "0.5px solid hsl(var(--foreground) / 0.08)",
+                      background: "rgba(0,0,0,0.05)",
+                      border: "0.5px solid rgba(0,0,0,0.1)",
                     }}
                   >
-                    <Bot className="w-5 h-5" style={{ color: p.active ? "hsl(var(--foreground))" : "hsl(var(--foreground) / 0.4)" }} />
+                    <Bot className="w-5 h-5" style={{ color: p.active ? "rgba(0,0,0,0.8)" : "rgba(0,0,0,0.35)" }} />
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-0.5">
                       <StatusOrbBig active={p.active} />
-                      <h3 className="text-white font-bold text-sm" style={{ fontFamily: "'Inter', sans-serif" }}>
+                      <h3 className="font-bold text-sm" style={{ fontFamily: "'Inter', sans-serif", color: "rgba(0,0,0,0.85)" }}>
                         {p.title}
                       </h3>
                     </div>
@@ -412,8 +407,8 @@ export function PurchaseHistory() {
               <div
                 className="rounded-xl p-4 mb-4"
                 style={{
-                  background: "linear-gradient(135deg, rgba(150,150,150,0.06) 0%, rgba(150,150,150,0.03) 100%)",
-                  border: "0.5px solid rgba(150,150,150,0.1)",
+                  background: "rgba(0,0,0,0.03)",
+                  border: "0.5px solid rgba(0,0,0,0.07)",
                 }}
               >
                 <div className="flex items-center gap-1.5 mb-3">

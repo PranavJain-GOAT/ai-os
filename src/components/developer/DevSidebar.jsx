@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Package, Plus, BarChart3, ArrowLeft, MessageSquare, User, Key, Webhook, Terminal, FlaskConical, Activity } from "lucide-react";
+import { LayoutDashboard, Package, Plus, ArrowLeft, MessageSquare, User } from "lucide-react";
 import { useRef } from "react";
-import DashboardToggle from "@/components/shared/DashboardToggle";
 
 const NAV_GROUPS = [
   {
@@ -10,16 +9,6 @@ const NAV_GROUPS = [
       { path: "/developer",           label: "Dashboard",   icon: LayoutDashboard },
       { path: "/developer/listings",  label: "My Listings", icon: Package },
       { path: "/developer/add",       label: "Add Product", icon: Plus },
-      { path: "/developer/analytics", label: "Analytics",   icon: BarChart3 },
-    ],
-  },
-  {
-    label: "Dev Tools",
-    items: [
-      { path: "/developer/api-vault", label: "API Vault",  icon: Key },
-      { path: "/developer/webhooks",  label: "Webhooks",   icon: Webhook },
-      { path: "/developer/logs",      label: "Logs",       icon: Terminal },
-      { path: "/developer/sandbox",   label: "AI Sandbox", icon: FlaskConical, badge: "NEW" },
     ],
   },
   {
@@ -60,7 +49,7 @@ function MagneticNavItem({ item, isActive }) {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all relative group ${
-        isActive ? "text-foreground" : "text-foreground/40 hover:text-foreground/75"
+        isActive ? "text-foreground" : "text-foreground/60 hover:text-foreground/90"
       }`}
       style={{
         background: isActive
@@ -121,7 +110,7 @@ export default function DevSidebar() {
       }}
     >
       {/* Logo area */}
-      <div className="p-5 border-b border-border">
+      <div className="p-5 pt-8 border-b border-border">
         <Link
           to="/"
           className="inline-flex items-center gap-1.5 mb-5 text-xs group transition-colors"
@@ -168,7 +157,6 @@ export default function DevSidebar() {
 
       {/* Bottom — Dashboard Switcher + Status */}
       <div className="border-t border-border p-4 space-y-3">
-        <DashboardToggle />
         <div
           className="flex items-center gap-2.5 px-3.5 py-3 rounded-xl border border-border"
         >

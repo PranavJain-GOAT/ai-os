@@ -6,7 +6,6 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import DashboardToggle from "@/components/shared/DashboardToggle";
 
 const NAV_ITEMS = [
   { path: "/client",              label: "Overview",         icon: History },
@@ -118,15 +117,9 @@ export default function ClientLayout() {
   };
 
   return (
-    <div id="client-dashboard-root" className="flex min-h-screen relative" style={{ background: "transparent" }}>
+    <div id="client-dashboard-root" className="flex min-h-screen relative" style={{ background: "#f7f7f7" }}>
 
-      {/* ── Background Atmosphere Orbs ── */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden" style={{ zIndex: 0 }}>
-        <div className="client-orb-1" style={{ top: "-10%", right: "-5%" }} />
-        <div className="client-orb-2" style={{ bottom: "-15%", left: "-8%" }} />
-      </div>
-
-      {/* ── Sidebar ── */}
+      {/* Sidebar */}
       <div style={{ position: "relative", zIndex: 10 }}>
         <ClientSidebar vipMode={vipMode} onVipToggle={() => setVipMode((p) => !p)} />
       </div>
@@ -152,8 +145,6 @@ export default function ClientLayout() {
             </div>
             <span className="text-white font-bold text-sm" style={{ fontFamily: "Georgia, serif" }}>Client Hub</span>
           </div>
-          {/* Mode switcher for mobile dual-role users */}
-          <DashboardToggle compact />
           <button onClick={() => setMobileOpen(!mobileOpen)} className="text-white/50 hover:text-white transition-colors">
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -210,7 +201,7 @@ export default function ClientLayout() {
         )}
 
         {/* Page content */}
-        <main className="flex-1 overflow-auto pb-24">
+        <main className="flex-1 overflow-auto pb-40 lg:pb-24 relative">
           <Outlet context={{ vipMode, setVipMode }} />
         </main>
       </div>

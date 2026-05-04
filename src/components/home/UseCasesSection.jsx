@@ -60,20 +60,7 @@ export default function UseCasesSection() {
                     </div>
                     <div className="text-white/50 text-sm leading-relaxed relative z-10">{uc.desc} workflows automated. Deploy complex logic without code.</div>
 
-                    {/* Feature Peek Ghost */}
-                    <div className="absolute inset-0 bg-[#0a0a0a]/90 backdrop-blur-sm p-4 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex flex-col justify-end border border-cyber-green/20">
-                       <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out bg-white/5 border border-white/10 rounded-xl p-3 shadow-2xl glass mb-2">
-                           <div className="h-2 w-1/3 bg-white/20 rounded-full mb-2" />
-                           <div className="h-1.5 w-full bg-white/10 rounded-full mb-1" />
-                           <div className="h-1.5 w-3/4 bg-white/10 rounded-full mb-3" />
-                           <div className="flex items-center gap-2 mt-auto">
-                               <div className="w-4 h-4 rounded-full bg-cyber-green/20 flex items-center justify-center border border-cyber-green/40">
-                                  <span className="w-1.5 h-1.5 bg-cyber-green rounded-full" />
-                               </div>
-                               <div className="text-[10px] font-mono text-cyber-green tracking-widest uppercase">Agent Online</div>
-                           </div>
-                       </div>
-                    </div>
+
                   </motion.div>
 
                 </div>

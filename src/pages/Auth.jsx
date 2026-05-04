@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Code2, Briefcase, Users, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
+import { ArrowLeft, Code2, Briefcase, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTheme } from "@/lib/ThemeContext";
 
@@ -12,7 +12,7 @@ export default function Auth() {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const [role, setRole] = useState("client"); // 'client', 'developer', 'both'
+  const [role, setRole] = useState("client"); // 'client' | 'developer'
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,8 +26,7 @@ export default function Auth() {
 
     // Initial redirect logic based on selected role
     if (role === "developer") navigate("/developer");
-    else if (role === "client") navigate("/client");
-    else navigate("/client"); // Both default starts at client view
+    else navigate("/client");
   };
 
   const OptionCard = ({ id, icon: Icon, title, desc }) => (
@@ -76,7 +75,7 @@ export default function Auth() {
           className={`relative max-w-md ${isDark ? 'text-white' : 'text-gray-900'}`}
         >
           <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 ${isDark ? 'bg-white' : 'bg-[#111827]'}`}>
-            <Users className="w-8 h-8" style={{ color: isDark ? '#000000' : '#ffffff' }} />
+            <Briefcase className="w-8 h-8" style={{ color: isDark ? '#000000' : '#ffffff' }} />
           </div>
           <h2 className="font-heading text-4xl font-bold mb-4 leading-tight">
             One account.<br />Infinite possibilities.
@@ -158,12 +157,6 @@ export default function Auth() {
                 icon={Code2} 
                 title="I'm a Developer" 
                 desc="Build, list, and sell AI solutions directly" 
-              />
-              <OptionCard 
-                id="both" 
-                icon={Users} 
-                title="Both" 
-                desc="Access to both buying and selling features" 
               />
             </div>
 
