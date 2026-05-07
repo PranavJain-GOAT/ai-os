@@ -55,10 +55,10 @@ const FEATURES = [
 
 const CODE_LINES = [
   { type: "comment", text: "// Install your AI system in 3 lines" },
-  { type: "keyword", text: "import", rest: " { AIStack } from '@aistack/sdk';" },
+  { type: "keyword", text: "import", rest: " { Deployra } from '@deployra/sdk';" },
   { type: "blank", text: "" },
-  { type: "keyword", text: "const", rest: " ai = new AIStack({" },
-  { type: "prop", text: "  apiKey:", rest: " process.env.AISTACK_KEY," },
+  { type: "keyword", text: "const", rest: " ai = new Deployra({" },
+  { type: "prop", text: "  apiKey:", rest: " process.env.DEPLOYRA_KEY," },
   { type: "prop", text: "  system:", rest: " 'whatsapp-order-bot'," },
   { type: "prop", text: "  locale:", rest: " 'en-US'," },
   { type: "text", text: "});" },
@@ -108,7 +108,7 @@ export default function Features() {
               <span className="text-mask">Zero compromise.</span>
             </h1>
             <p className="text-white/35 text-base max-w-xl mx-auto leading-relaxed" style={{ letterSpacing: '-0.01em' }}>
-              Every AIStack system is built to the highest standards of performance, security, and reliability. Here's what's under the hood.
+              Every Deployra system is built to the highest standards of performance, security, and reliability. Here's what's under the hood.
             </p>
           </motion.div>
         </div>
@@ -184,7 +184,7 @@ export default function Features() {
                     <div className="w-3 h-3 rounded-full" style={{ background: '#FEBC2E' }} />
                     <div className="w-3 h-3 rounded-full" style={{ background: '#28C840' }} />
                   </div>
-                  <span className="tech-label text-white/25 ml-3">aistack-deploy.js</span>
+                  <span className="tech-label text-white/25 ml-3">deployra-deploy.js</span>
                   <div className="ml-auto flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-cyber-green pulse-aura" />
                     <span className="tech-label text-cyber-green/70">LIVE</span>

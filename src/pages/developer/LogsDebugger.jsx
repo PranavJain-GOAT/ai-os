@@ -227,7 +227,7 @@ export default function LogsDebugger() {
           <div className="w-2.5 h-2.5 rounded-full" style={{ background: "hsl(var(--card))" }} />
           <div className="w-2.5 h-2.5 rounded-full" style={{ background: "hsl(var(--card))" }} />
           <span className="ml-3 text-[11px]" style={{ color: "hsl(var(--foreground) / 0.25)", fontFamily: "'JetBrains Mono', monospace" }}>
-            aistack-debugger — bash
+            deployra-debugger — bash
           </span>
         </div>
 

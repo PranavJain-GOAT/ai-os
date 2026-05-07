@@ -125,7 +125,6 @@ export default function ProductCard({ product, index, featured = false }) {
             )}
             {product.rating && (
               <span className="cyber-tag text-white/80">
-                <Activity className="w-2.5 h-2.5" />
                 {product.rating}
               </span>
             )}

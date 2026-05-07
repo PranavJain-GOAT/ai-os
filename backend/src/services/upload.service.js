@@ -25,7 +25,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: multerS3({
     s3: s3Config,
-    bucket: process.env.AWS_S3_BUCKET_NAME || 'aistack-uploads-dev',
+    bucket: process.env.AWS_S3_BUCKET_NAME || 'deployra-uploads-dev',
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },

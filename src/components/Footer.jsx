@@ -16,7 +16,7 @@ export default function Footer() {
             userSelect: 'none',
           }}
         >
-          AIStack
+          Deployra
         </span>
       </div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,10 +33,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-black font-bold text-sm" style={{ fontFamily: 'Georgia, serif' }}>A</span>
-              </div>
-              <span className="text-white font-bold text-xl" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.04em' }}>AIStack</span>
+              <img src="/logo.png" alt="Deployra Logo" className="w-11 h-11 object-contain" />
+              <span className="text-white font-bold text-3xl" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.04em' }}>Deployra</span>
             </div>
             <p className="text-white/25 text-sm leading-relaxed font-mono text-xs">
               AI systems for real businesses.<br />No developers needed.
@@ -83,7 +81,7 @@ export default function Footer() {
           ))}
         </div>
         <div className="border-t border-white/6 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="text-white/15 text-xs font-mono">© 2026 AISTACK. ALL RIGHTS RESERVED.</span>
+          <span className="text-white/15 text-xs font-mono">© 2026 DEPLOYRA. ALL RIGHTS RESERVED.</span>
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-cyber-green pulse-aura" />
             <span className="text-white/15 text-xs font-mono">ALL SYSTEMS OPERATIONAL</span>

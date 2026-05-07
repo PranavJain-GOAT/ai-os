@@ -16,7 +16,7 @@ const sendEmail = async (to, subject, html) => {
   try {
     const transporter = createTransporter();
     const mailOptions = {
-      from: process.env.EMAIL_FROM || 'AIStack <noreply@aistack.com>',
+      from: process.env.EMAIL_FROM || 'Deployra <noreply@deployra.com>',
       to,
       subject,
       html
@@ -36,8 +36,8 @@ const sendEmail = async (to, subject, html) => {
 };
 
 const sendWelcomeEmail = async (to, name) => {
-  const subject = 'Welcome to AIStack!';
-  const html = `<h1>Hello ${name}!</h1><p>Welcome to AIStack, the premium AI solutions marketplace.</p>`;
+  const subject = 'Welcome to Deployra!';
+  const html = `<h1>Hello ${name}!</h1><p>Welcome to Deployra, the premium AI solutions marketplace.</p>`;
   return sendEmail(to, subject, html);
 };
 

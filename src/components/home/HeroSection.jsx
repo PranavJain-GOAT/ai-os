@@ -31,7 +31,7 @@ function LiveTerminalPreview() {
   }, []);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText("npx @aistack/cli deploy --auto");
+    navigator.clipboard.writeText("npx @deployra/cli deploy --auto");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -64,7 +64,7 @@ function LiveTerminalPreview() {
            onClick={handleConfetti}
            title="Click to execute"
         >
-           $ npx @aistack/cli deploy --auto
+           $ npx @deployra/cli deploy --auto
         </div>
         <AnimatePresence>
           {lines.map((ln, idx) => (
@@ -199,7 +199,7 @@ export default function HeroSection() {
               className="font-heading leading-[1.1] mb-6 block"
               style={{ fontSize: 'clamp(2.5rem, 6vw, 4.8rem)', letterSpacing: '-0.04em' }}
             >
-              <span className="text-white mr-3">AI OS for</span>
+              <span className="text-white mr-3">Configure. Deploy. Scale for</span>
               <RotatingPersona />
             </motion.h1>
 

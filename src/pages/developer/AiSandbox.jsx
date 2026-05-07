@@ -9,7 +9,7 @@ import {
 /* ─────────────────────────────────────────────
    INITIAL STATE
 ───────────────────────────────────────────── */
-const DEFAULT_INSTRUCTION = `You are a professional AI customer support agent for AIStack.
+const DEFAULT_INSTRUCTION = `You are a professional AI customer support agent for Deployra.
 Your job is to help customers with:
 - Product installation questions
 - Billing & subscription issues

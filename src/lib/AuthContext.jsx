@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAppState = async () => {
     // UI Prototype Mode: Bypass backend authentication checks to prevent 20-second hangs on reload
-    setAppPublicSettings({ name: 'AIStack Prototype' });
+    setAppPublicSettings({ name: 'Deployra Prototype' });
     setIsLoadingPublicSettings(false);
     setIsLoadingAuth(false);
     setIsAuthenticated(true);

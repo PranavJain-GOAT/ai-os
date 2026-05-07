@@ -5,17 +5,13 @@ import { Link } from "react-router-dom";
 import { useTheme } from "@/lib/ThemeContext";
 
 const MILESTONES = [
-  { year: "2021", title: "The Idea", desc: "Pranav Jain, frustrated by how difficult and expensive it was to deploy AI for his family's business, decided to build the platform he wished existed." },
-  { year: "2022", title: "Founded AIStack", desc: "With $250K in bootstrapped capital and a team of 3, AIStack launched its first product — a WhatsApp order bot that went live for 12 businesses in week one." },
-  { year: "2023", title: "Product-Market Fit", desc: "Reached 100 active businesses across 18 countries. Raised a $4M Seed round led by Y Combinator. Expanded the marketplace to 30+ AI systems." },
-  { year: "2024", title: "Series A — $12M", desc: "Global expansion. Hired world-class engineers and designers. Launched the Developer Marketplace, enabling third-party builders to list and monetize their AI systems." },
-  { year: "2025", title: "The Standard", desc: "500+ businesses. 99.9% uptime. $2M+ paid out to developers. AIStack became the most trusted name in AI deployment for SMBs and enterprises alike." },
+  { year: "2024", title: "Ideation Stage", desc: "We are currently at the ideation stage, looking forward to raising funds, building a world-class team, and proceeding to build the platform." },
 ];
 
 const TEAM = [
-  { name: "Pranav Jain", role: "CEO & Founder", initials: "PJ", bio: "Former ML engineer at Google DeepMind. Built and sold two SaaS companies before founding AIStack at 26. Obsessed with making AI accessible to every business on earth.", featured: true },
-  { name: "Anika Sharma", role: "CTO & Co-Founder", initials: "AS", bio: "Ex-Meta infrastructure lead. Architected systems serving 100M+ users. Leads all technical operations at AIStack." },
-  { name: "Marcus Reid", role: "Head of Design", initials: "MR", bio: "Former Design Director at Linear and Vercel. Defines the visual and interaction language of AIStack." },
+  { name: "Pranav Jain", role: "CEO & Founder", initials: "PJ", bio: "Former ML engineer at Google DeepMind. Built and sold two SaaS companies before founding Deployra at 26. Obsessed with making AI accessible to every business on earth.", featured: true },
+  { name: "Anika Sharma", role: "CTO & Co-Founder", initials: "AS", bio: "Ex-Meta infrastructure lead. Architected systems serving 100M+ users. Leads all technical operations at Deployra." },
+  { name: "Marcus Reid", role: "Head of Design", initials: "MR", bio: "Former Design Director at Linear and Vercel. Defines the visual and interaction language of Deployra." },
   { name: "Yuki Tanaka", role: "Head of AI Research", initials: "YT", bio: "PhD in NLP from MIT. Leads the AI model curation and quality assurance for all marketplace systems." },
   { name: "Sofia Reyes", role: "VP of Growth", initials: "SR", bio: "Scaled Notion from 0 to 4M users. Runs all acquisition, partnerships, and developer community initiatives." },
   { name: "Liam O'Brien", role: "Head of Engineering", initials: "LO", bio: "Previously principal engineer at Stripe. Leads a distributed team of 18 across 9 time zones." },
@@ -63,6 +59,9 @@ export default function About() {
 
   const handleContact = (e) => {
     e.preventDefault();
+    const subject = encodeURIComponent("New Inquiry from " + contactForm.name);
+    const body = encodeURIComponent(`Name: ${contactForm.name}\nEmail: ${contactForm.email}\n\nMessage:\n${contactForm.message}`);
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=pranavjaineluru@gmail.com&su=${subject}&body=${body}`, '_blank');
     setSent(true);
     setContactForm({ name: "", email: "", message: "" });
     setTimeout(() => setSent(false), 4000);
@@ -79,24 +78,15 @@ export default function About() {
         <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full blur-[100px] pointer-events-none"
           style={{ background: 'rgba(77,159,255,0.05)' }} />
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 max-w-5xl mx-auto px-4 text-center py-24">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-cyber-green pulse-aura" />
-            <span className="tech-label text-white/50 tracking-[0.25em]">EST. 2022 · SAN FRANCISCO, CA</span>
-          </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.1 }}
             className="text-white font-bold leading-none mb-6"
-            style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(3rem,9vw,7rem)', letterSpacing: '-0.04em' }}
+            style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2.5rem,6vw,5.5rem)', letterSpacing: '-0.04em' }}
           >
-            We're on a mission<br />
-            <span className="text-mask">to democratize AI.</span>
+            Where developers and businesses<br />
+            <span className="text-mask">deploy faster together.</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -105,7 +95,7 @@ export default function About() {
             className="text-white/40 text-xl max-w-2xl mx-auto leading-relaxed mb-10"
             style={{ letterSpacing: '-0.02em' }}
           >
-            AIStack was founded on the belief that every business — regardless of size, budget, or technical expertise — deserves access to the AI systems that power the world's most successful companies.
+            We’re building a platform that helps businesses install ready-made digital systems while enabling developers to distribute reusable products at scale.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -134,29 +124,9 @@ export default function About() {
                 style={{ background: isDark ? 'radial-gradient(ellipse at 30% 30%, rgba(77,159,255,0.18) 0%, rgba(77,159,255,0.08) 50%, transparent 70%)' : 'radial-gradient(ellipse at 30% 30%, rgba(77,159,255,0.08) 0%, rgba(77,159,255,0.04) 50%, transparent 70%)' }} />
               <div className="glass rounded-[2rem] w-full h-full flex items-center justify-center border border-white/10 relative overflow-hidden group">
                 <div className="absolute inset-0 dark-grid opacity-30 z-0" />
-                <img src="/founder.jpg" alt="Pranav Jain" className="absolute inset-0 w-full h-full object-cover z-10 transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-20 pointer-events-none" />
-                <div className="absolute bottom-6 left-6 right-6 z-30">
-                  <div className="text-white font-bold text-3xl mb-1" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.03em' }}>Pranav Jain</div>
-                  <div className="tech-label text-nova-blue mt-1 tracking-widest bg-nova-blue/10 border border-nova-blue/20 inline-block px-3 py-1 rounded-full backdrop-blur-md">CEO & FOUNDER</div>
-                </div>
+                <div className="text-white font-bold z-30" style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(5rem, 15vw, 8rem)', letterSpacing: '-0.03em' }}>PJ</div>
               </div>
             </div>
-            {/* Floating badges */}
-            <motion.div
-              animate={{ y: [-4, 4, -4] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-4 -right-4 glass rounded-2xl px-4 py-2.5 border border-white/15 z-40 shadow-xl"
-            >
-              <div className="tech-label text-cyber-green">Y COMBINATOR '23</div>
-            </motion.div>
-            <motion.div
-              animate={{ y: [4, -4, 4] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-4 -left-4 glass rounded-2xl px-4 py-2.5 border border-white/15 z-40 shadow-xl"
-            >
-              <div className="tech-label text-nova-blue">EX GOOGLE DEEPMIND</div>
-            </motion.div>
           </motion.div>
 
           {/* Copy */}
@@ -204,7 +174,7 @@ export default function About() {
             <div className="flex items-center gap-4 mt-8">
               <div>
                 <div className="text-white font-bold text-lg" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.03em' }}>Pranav Jain</div>
-                <div className="tech-label text-white/30">CEO & Founder, AIStack</div>
+                <div className="tech-label text-white/30">CEO & Founder, Deployra</div>
               </div>
               <div className="flex gap-2 ml-auto">
                 {[
@@ -400,20 +370,6 @@ export default function About() {
             initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
             className="space-y-5"
           >
-            {/* HQ */}
-            <div className="glass rounded-2xl p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 glass rounded-xl flex items-center justify-center shrink-0 border border-white/10">
-                  <MapPin className="w-4 h-4 text-nova-blue" />
-                </div>
-                <div>
-                  <div className="tech-label text-white/30 mb-1">HEADQUARTERS</div>
-                  <div className="text-white font-medium" style={{ letterSpacing: '-0.02em' }}>188 King Street, Suite 400</div>
-                  <div className="text-white/50 text-sm">San Francisco, CA 94107, USA</div>
-                </div>
-              </div>
-            </div>
-
             {/* Email */}
             <div className="glass rounded-2xl p-6">
               <div className="flex items-start gap-4">
@@ -422,10 +378,8 @@ export default function About() {
                 </div>
                 <div>
                   <div className="tech-label text-white/30 mb-1">EMAIL</div>
-                  <a href="mailto:hello@aistack.dev" className="text-white hover:text-nova-blue transition-colors font-medium" style={{ letterSpacing: '-0.02em' }}>hello@aistack.dev</a>
-                  <div className="text-white/30 text-sm mt-0.5">General inquiries & partnerships</div>
-                  <a href="mailto:pranav@aistack.dev" className="block text-white/60 hover:text-white transition-colors text-sm mt-2" style={{ letterSpacing: '-0.02em' }}>pranav@aistack.dev</a>
-                  <div className="text-white/25 text-xs">Direct to Pranav (Founder)</div>
+                  <a href="mailto:pranavjaineluru@gmail.com" className="text-white hover:text-nova-blue transition-colors font-medium" style={{ letterSpacing: '-0.02em' }}>pranavjaineluru@gmail.com</a>
+                  <div className="text-white/30 text-sm mt-0.5">Direct to Founder</div>
                 </div>
               </div>
             </div>
@@ -438,28 +392,21 @@ export default function About() {
                 </div>
                 <div>
                   <div className="tech-label text-white/30 mb-1">PHONE</div>
-                  <div className="text-white font-medium" style={{ letterSpacing: '-0.02em' }}>+1 (415) 240-8800</div>
-                  <div className="text-white/30 text-sm">Mon–Fri, 9am–6pm PT</div>
+                  <div className="text-white font-medium" style={{ letterSpacing: '-0.02em' }}>9032654378</div>
                 </div>
               </div>
             </div>
 
-            {/* Social */}
+            {/* LinkedIn */}
             <div className="glass rounded-2xl p-6">
-              <div className="tech-label text-white/30 mb-4">FOLLOW US</div>
-              <div className="flex gap-3">
-                {[
-                  { icon: Twitter, label: "Twitter / X", handle: "@AIStackHQ" },
-                  { icon: Linkedin, label: "LinkedIn", handle: "aistack-dev" },
-                  { icon: Github, label: "GitHub", handle: "aistack-dev" },
-                  { icon: MessageSquare, label: "Discord", handle: "Join Server" },
-                ].map(({ icon: Icon, label, handle }) => (
-                  <a key={label} href="#"
-                    className="flex-1 glass rounded-xl p-3 flex flex-col items-center gap-1.5 text-white/30 hover:text-white hover:border-white/20 transition-all border border-white/8 group">
-                    <Icon className="w-4 h-4 group-hover:text-nova-blue transition-colors" />
-                    <span className="tech-label text-[9px] text-center">{handle}</span>
-                  </a>
-                ))}
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 glass rounded-xl flex items-center justify-center shrink-0 border border-white/10">
+                  <Linkedin className="w-4 h-4 text-nova-blue" />
+                </div>
+                <div>
+                  <div className="tech-label text-white/30 mb-1">LINKEDIN</div>
+                  <a href="https://www.linkedin.com/in/pranavjaineluru" target="_blank" rel="noopener noreferrer" className="text-white hover:text-nova-blue transition-colors font-medium" style={{ letterSpacing: '-0.02em' }}>linkedin.com/in/pranavjaineluru</a>
+                </div>
               </div>
             </div>
           </motion.div>

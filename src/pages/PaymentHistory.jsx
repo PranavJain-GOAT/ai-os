@@ -31,7 +31,7 @@ export default function PaymentHistory() {
     .reduce((sum, o) => sum + (o.amount || 0), 0);
 
   const generateInvoice = (order) => {
-    const content = `INVOICE\n\nOrder ID: ${order.id}\nProduct: ${order.product_title}\nAmount: $${order.amount}\nStatus: ${order.status}\nDate: ${new Date(order.created_date).toLocaleDateString()}\n\nThank you for your business!\nAIStack Platform`;
+    const content = `INVOICE\n\nOrder ID: ${order.id}\nProduct: ${order.product_title}\nAmount: $${order.amount}\nStatus: ${order.status}\nDate: ${new Date(order.created_date).toLocaleDateString()}\n\nThank you for your business!\nDeployra Platform`;
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

@@ -93,18 +93,17 @@ export default function Navbar() {
           <div className="flex items-center justify-between w-full" style={{ maxWidth: '1400px', margin: '0 auto' }}>
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 shrink-0 group z-50">
-              <motion.div
+              <motion.img
                 whileHover={{ scale: 1.1, rotate: 5 }}
-                className="w-7 h-7 rounded-lg flex items-center justify-center"
-                style={{ background: logoBgColor }}
-              >
-                <span className="font-bold text-sm" style={{ fontFamily: 'Georgia, serif', color: logoLetterColor }}>A</span>
-              </motion.div>
+                src="/logo.png"
+                alt="Deployra Logo"
+                className="w-9 h-9 sm:w-10 sm:h-10 object-contain"
+              />
               <span
-                className="font-bold tracking-tight text-[13px] sm:text-base flex items-center"
+                className="font-bold tracking-tight text-base sm:text-xl flex items-center"
                 style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.04em', color: logoTextColor }}
               >
-                AIStack
+                Deployra
               </span>
             </Link>
 

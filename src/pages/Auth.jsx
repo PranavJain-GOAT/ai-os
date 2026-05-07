@@ -81,7 +81,7 @@ export default function Auth() {
             One account.<br />Infinite possibilities.
           </h2>
           <p className={`${isDark ? 'text-white/50' : 'text-gray-600'} text-lg leading-relaxed mb-10`}>
-            Join AIStack. Buy instant AI solutions, or build and sell your own to businesses worldwide.
+            Join Deployra. Buy instant AI solutions, or build and sell your own to businesses worldwide.
           </p>
 
           <div className="space-y-4">
