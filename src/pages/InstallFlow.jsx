@@ -4,6 +4,15 @@ import { MOCK_PRODUCTS, MOCK_CUSTOM_SOLUTIONS } from "@/api/mockData";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowLeft, Check, Upload, Settings, CreditCard, Shield, Smartphone, QrCode, CreditCard as CardIcon, Loader2, Link as LinkIcon, ExternalLink, Plus, X, Image as ImageIcon, FileText, FileBadge, Building2, MapPin, Mail, Phone, Globe, Briefcase, UserRoundSearch } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
+
+const loadScript = src => new Promise((resolve) => {
+  const script = document.createElement('script');
+  script.src = src;
+  script.onload = () => resolve(true);
+  script.onerror = () => resolve(false);
+  document.body.appendChild(script);
+});
 
 const STEPS = [
   { num: 1, label: "Company Details", icon: Building2 },
@@ -52,25 +61,76 @@ export default function InstallFlow() {
     }, 400);
   }, [id, type]);
 
-  const handleComplete = async () => {
-    // Simulate Razorpay processing delay
+  const handleRazorpayCheckout = async () => {
+    const amount = product?.price || product?.price_min || 0;
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000)); 
-    console.log("Mock Order Created:", {
-      product_type: type,
-      product_id: id,
-      product_title: product?.title || "Unknown",
-      amount: product?.price || product?.price_min || 0,
-      payment_method: payMethod,
-      customer_data: formData,
-    });
-    setLoading(false);
-    setStep(4); // Step 4 is now the status page
-    setDeliveryStatus(0);
-
-    // Simulate delivery workflow
-    setTimeout(() => setDeliveryStatus(1), 1500); // Move to Setup in Progress
-    setTimeout(() => setDeliveryStatus(2), 4000); // Move to Delivered
+    
+    try {
+      const { data } = await axios.post('http://127.0.0.1:5000/api/v1/payment/order', {
+        amount: amount,
+        currency: 'USD'
+      });
+      
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to create order');
+      }
+      
+      const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js');
+      if (!res) {
+        alert('Razorpay SDK failed to load. Are you online?');
+        setLoading(false);
+        return;
+      }
+      
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || '', // Needs to be added to frontend .env
+        amount: Math.round(amount * 100),
+        currency: data.currency,
+        name: 'Deployra',
+        description: `Deployment setup for ${product?.title || 'System'}`,
+        order_id: data.order_id,
+        handler: async function (response) {
+          try {
+            const verifyData = await axios.post('http://127.0.0.1:5000/api/v1/payment/verify', {
+              orderId: data.order_id,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature
+            });
+            
+            if (verifyData.data.success) {
+               setLoading(false);
+               setStep(4);
+               setDeliveryStatus(0);
+               setTimeout(() => setDeliveryStatus(1), 1500);
+               setTimeout(() => setDeliveryStatus(2), 4000);
+            }
+          } catch (err) {
+             console.error("Verification failed", err);
+             alert("Payment verification failed.");
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setLoading(false);
+          }
+        },
+        theme: {
+          color: '#4D9FFF'
+        }
+      };
+      
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response) {
+         console.error(response.error.description);
+         alert("Payment failed: " + response.error.description);
+      });
+      rzp.open();
+      
+    } catch (error) {
+      console.error(error);
+      alert("Checkout error: " + (error.response?.data?.message || error.message));
+      setLoading(false);
+    }
   };
 
   const simulateUpload = (field) => {
@@ -450,71 +510,7 @@ export default function InstallFlow() {
                 </StepContent>
               )}
               
-              {step === 3 && (
-                <StepContent title="Complete Payment" subtitle="Secure checkout via Razorpay Gateway.">
-                  {/* Order Summary */}
-                  <div className="bg-black/40 border border-white/10 rounded-2xl p-6 mb-8 flex justify-between items-center">
-                    <div>
-                      <p className="text-xs text-white/50 font-mono uppercase tracking-widest mb-1">Order Summary</p>
-                      <h3 className="text-xl font-bold text-white">{product?.title || "Custom AI Solution"}</h3>
-                      <p className="text-sm text-[#4D9FFF] mt-1">{type === 'instant' ? 'Instant Deployment' : 'Developer Workflow'}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-3xl font-bold text-white">${product?.price || product?.price_min || "Custom"}</p>
-                      <p className="text-xs text-white/40 mt-1">One-time setup fee</p>
-                    </div>
-                  </div>
-
-                  {/* Razorpay Mock Interface */}
-                  <div className="border border-white/10 rounded-2xl overflow-hidden bg-black/20">
-                    <div className="bg-[#020420] border-b border-white/10 p-4 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Shield className="w-4 h-4 text-cyber-green" />
-                        <span className="text-xs font-semibold text-white/60 uppercase tracking-widest">Razorpay Secure</span>
-                      </div>
-                      <div className="flex gap-1">
-                        <div className="w-8 h-5 bg-white/10 rounded" />
-                        <div className="w-8 h-5 bg-white/10 rounded" />
-                        <div className="w-8 h-5 bg-white/10 rounded" />
-                      </div>
-                    </div>
-                    
-                    <div className="flex border-b border-white/10">
-                      <button 
-                        onClick={() => setPayMethod('card')}
-                        className={`flex-1 py-4 flex items-center justify-center gap-2 text-sm font-semibold transition-all ${payMethod === 'card' ? 'bg-white/5 text-white border-b-2 border-[#4D9FFF]' : 'text-white/40 hover:text-white/70 hover:bg-white/[0.02]'}`}
-                      >
-                        <CardIcon className="w-4 h-4" /> Card
-                      </button>
-                      <button 
-                        onClick={() => setPayMethod('upi')}
-                        className={`flex-1 py-4 flex items-center justify-center gap-2 text-sm font-semibold transition-all ${payMethod === 'upi' ? 'bg-white/5 text-white border-b-2 border-[#4D9FFF]' : 'text-white/40 hover:text-white/70 hover:bg-white/[0.02]'}`}
-                      >
-                        <Smartphone className="w-4 h-4" /> UPI
-                      </button>
-                    </div>
-
-                    <div className="p-6">
-                      {payMethod === 'card' ? (
-                        <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-                          <InputField label="Card Number" placeholder="0000 0000 0000 0000" />
-                          <div className="grid grid-cols-2 gap-4">
-                            <InputField label="Expiry" placeholder="MM/YY" />
-                            <InputField label="CVV" type="password" placeholder="•••" />
-                          </div>
-                          <InputField label="Cardholder Name" placeholder="Name on card" />
-                        </div>
-                      ) : (
-                        <div className="animate-in fade-in slide-in-from-left-4 duration-300 py-4 text-center">
-                          <QrCode className="w-32 h-32 text-white/80 mx-auto mb-6" />
-                          <p className="text-sm text-white/60 mb-4">Scan QR with any UPI app</p>
-                          <InputField label="Or enter UPI ID" placeholder="username@upi" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </StepContent>
-              )}
+              
             </div>
 
             {/* Navigation */}
@@ -524,15 +520,15 @@ export default function InstallFlow() {
                   <ArrowLeft className="w-4 h-4" /> Back
                 </Button>
               ) : <div />}
-              {step < 3 ? (
-                <Button onClick={() => setStep(step + 1)} className="bg-white text-black rounded-xl font-heading font-bold gap-2 h-12 px-8 hover:bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.2)] ml-auto">
-                  {step === 2 ? "Configure and Pay" : "Continue"} <ArrowRight className="w-4 h-4" />
+              {step === 1 ? (
+                <Button onClick={() => setStep(2)} className="bg-white text-black rounded-xl font-heading font-bold gap-2 h-12 px-8 hover:bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.2)] ml-auto">
+                  Continue <ArrowRight className="w-4 h-4" />
                 </Button>
-              ) : (
-                <Button onClick={handleComplete} className="bg-nova-blue text-white rounded-xl font-heading font-bold gap-2 h-12 px-8 hover:bg-nova-blue/90 shadow-[0_0_20px_rgba(77,159,255,0.3)]">
-                  Pay ${product?.price || product?.price_min || "0"} & Setup <ArrowRight className="w-4 h-4" />
+              ) : step === 2 ? (
+                <Button onClick={handleRazorpayCheckout} className="bg-nova-blue text-white rounded-xl font-heading font-bold gap-2 h-12 px-8 hover:bg-nova-blue/90 shadow-[0_0_20px_rgba(77,159,255,0.3)] ml-auto">
+                  Configure and Pay <ArrowRight className="w-4 h-4" />
                 </Button>
-              )}
+              ) : null}
             </div>
           </motion.div>
         )}

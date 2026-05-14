@@ -82,7 +82,7 @@ export const MOCK_PRODUCTS = [
     id: "p3",
     title: "WhatsApp Order Automation",
     plain_english: "Customers send their order on WhatsApp, the bot confirms it, takes payment, and notifies your kitchen.",
-    description: "A complete end-to-end WhatsApp sales funnel designed specifically for food delivery and retail. From menu browsing and answering product questions to taking the order, processing Stripe payments, and sending a notification straight to your kitchen staff, this bot handles it all without a single human touch.",
+    description: "A complete end-to-end WhatsApp sales funnel designed specifically for food delivery and retail. From menu browsing and answering product questions to taking the order, processing Razorpay payments, and sending a notification straight to your kitchen staff, this bot handles it all without a single human touch.",
     price: 199,
     category: "automation",
     rating: "4.9",
@@ -94,14 +94,14 @@ export const MOCK_PRODUCTS = [
     image_url: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80",
     preview_images: ["https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80", "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=80", "https://images.unsplash.com/photo-1590846406792-0adc7f928a18?w=800&q=80", "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"],
     demo_url: "https://example.com/demo/whatsapp",
-    features: ["Official WhatsApp Business API integration", "Native Stripe & PayPal payment links", "Instant Kitchen/Fulfillment notifications", "Conversational support in 50+ languages"],
+    features: ["Official WhatsApp Business API integration", "Native Razorpay & PayPal payment links", "Instant Kitchen/Fulfillment notifications", "Conversational support in 50+ languages"],
     what_it_does: "Replaces a human order-taker completely. It showcases your digital menu inside WhatsApp, helps customers customize their orders (e.g., 'no onions, extra cheese'), calculates the total, sends a secure payment link, and routes the confirmed order to your staff's display.",
     who_its_for: ["Cloud kitchens and food delivery services operating on social media", "Local retail stores wanting to sell directly via chat", "Bakeries and custom order businesses"],
     whats_included: [
       "WhatsApp Business API Setup: Full onboarding to the official Meta API so your number doesn't get banned for automated messaging.",
       "Digital Menu ingestion: We convert your PDF menu or website into an interactive WhatsApp catalog that customers can browse with buttons.",
       "Conversational NLP Engine: The AI understands complex, natural language orders like 'I want the combo but swap the fries for salad and add a coke'.",
-      "Stripe Payment Gateway: Auto-generation of secure payment links inside the chat. The bot waits for payment confirmation before sending the order to the kitchen.",
+      "Razorpay Payment Gateway: Auto-generation of secure payment links inside the chat. The bot waits for payment confirmation before sending the order to the kitchen.",
       "Live Order Dashboard: A web-based screen for your kitchen or fulfillment team that pings loudly every time a new, paid order arrives."
     ],
     whats_not_included: [
@@ -110,11 +110,11 @@ export const MOCK_PRODUCTS = [
     ],
     how_it_works: [
       { title: "Step 1: Upload Menu", desc: "Upload a CSV of your products or sync directly from your existing Shopify/Square account." },
-      { title: "Step 2: Connect Payments", desc: "Link your Stripe or PayPal account securely via OAuth." },
+      { title: "Step 2: Connect Payments", desc: "Link your Razorpay or PayPal account securely via OAuth." },
       { title: "Step 3: Define Kitchen Routing", desc: "Set up the email address or web-dashboard where your cooks will receive the finalized order tickets." },
       { title: "Step 4: Launch", desc: "Put your WhatsApp number on your Instagram bio. Customers message it, and the bot handles the rest." }
     ],
-    prerequisites: ["An active Stripe or PayPal business account to receive funds.", "A registered business entity (Meta requires this to grant official WhatsApp API access)."],
+    prerequisites: ["An active Razorpay or PayPal business account to receive funds.", "A registered business entity (Meta requires this to grant official WhatsApp API access)."],
     support_policy: "Lifetime bug fixes for the core ordering logic. Dedicated onboarding specialist to help you get your WhatsApp API verified with Meta.",
     delivery_info: "Live and ready to take orders in 5 minutes."
   },
@@ -183,7 +183,7 @@ export const MOCK_PRODUCTS = [
       "Client History CRM: Keeps a digital file for every client, storing notes like 'allergic to bleach' or 'prefers quiet appointments'."
     ],
     whats_not_included: [
-      "Payment Processing Fees: Stripe takes their standard 2.9% + 30c fee on any upfront deposits or no-show charges.",
+      "Payment Processing Fees: Razorpay takes their standard 2.9% + 30c fee on any upfront deposits or no-show charges.",
       "Custom Domain Hosting: The booking portal lives on a secure sub-domain (e.g., yoursalon.deployra.com) unless you configure custom DNS."
     ],
     how_it_works: [
@@ -192,7 +192,7 @@ export const MOCK_PRODUCTS = [
       { title: "Step 3: Configure Policies", desc: "Set your deposit requirements and cancellation fee percentages." },
       { title: "Step 4: Share Link", desc: "Put the 'Book Now' link in your Instagram bio and on your website." }
     ],
-    prerequisites: ["A Stripe account to securely handle credit card holds.", "A list of your services, durations, and prices ready to input."],
+    prerequisites: ["A Razorpay account to securely handle credit card holds.", "A list of your services, durations, and prices ready to input."],
     support_policy: "Includes priority email support. Any critical booking bugs are treated with P1 severity and patched within 2 hours.",
     delivery_info: "Configured and ready in 5 minutes."
   },
@@ -449,7 +449,7 @@ export const MOCK_PRODUCTS = [
     what_it_does: "Turns data into decisions. If your website conversion rate drops by 15% on a Tuesday, the AI immediately messages you on Slack saying: 'Heads up, conversions are down 15% today, likely due to increased bounce rates on mobile devices. Consider checking your mobile checkout page.'",
     who_its_for: ["Non-technical Founders and CEOs", "Marketing managers needing to prove ROI", "Operations teams tracking daily performance"],
     whats_included: [
-      "Multi-Source Integration: Connects seamlessly to Google Analytics 4, Stripe, Shopify, Meta Ads, and Google Ads all at once.",
+      "Multi-Source Integration: Connects seamlessly to Google Analytics 4, Razorpay, Shopify, Meta Ads, and Google Ads all at once.",
       "Natural Language Summaries: Replaces complex charts with simple sentences like 'Revenue grew 10% this week mainly due to a spike in organic traffic'.",
       "Real-Time Anomaly Alerts: Instantly pings you on Slack or Email if something breaks, like ad spend spiking or server traffic dropping to zero.",
       "Custom Automated PDFs: Generates beautiful, board-ready PDF reports every Monday morning so you can forward them to investors or clients.",
@@ -460,12 +460,12 @@ export const MOCK_PRODUCTS = [
       "Custom Graphic Design: The PDF reports use a clean, standard template and cannot be heavily modified visually beyond adding your logo."
     ],
     how_it_works: [
-      { title: "Step 1: Connect Tools", desc: "Use 1-click OAuth to connect your Google Analytics, Stripe, and Ad accounts." },
+      { title: "Step 1: Connect Tools", desc: "Use 1-click OAuth to connect your Google Analytics, Razorpay, and Ad accounts." },
       { title: "Step 2: Set KPIs", desc: "Tell the AI what matters to you (e.g., 'Track my Customer Acquisition Cost and Lifetime Value')." },
       { title: "Step 3: Define Schedule", desc: "Choose whether you want reports delivered daily, weekly, or monthly, and via Slack or Email." },
       { title: "Step 4: Receive Insights", desc: "Stop digging through spreadsheets and start receiving clear, actionable advice in your inbox." }
     ],
-    prerequisites: ["Admin access to your business tools (Google Analytics, Stripe, Shopify, etc.) to authorize the connection.", "A Slack or Microsoft Teams workspace (optional, for real-time alerts)."],
+    prerequisites: ["Admin access to your business tools (Google Analytics, Razorpay, Shopify, etc.) to authorize the connection.", "A Slack or Microsoft Teams workspace (optional, for real-time alerts)."],
     support_policy: "Includes dedicated support to ensure all your data sources are syncing correctly without discrepancies. Lifetime platform access.",
     delivery_info: "Connect your apps and get your first report in 10 minutes."
   }
@@ -575,7 +575,7 @@ export const MOCK_CUSTOM_SOLUTIONS = [
     "whats_included": [
       "Official Meta API Verification: We handle the complex bureaucratic process of getting your business verified by Meta for official API access.",
       "Custom Workflow Engineering: We design complex decision trees—handling everything from FAQs and product catalogs to live human handoffs.",
-      "Payment Gateway Integration: Securely integrate Stripe or local payment gateways directly inside the WhatsApp chat interface.",
+      "Payment Gateway Integration: Securely integrate Razorpay or local payment gateways directly inside the WhatsApp chat interface.",
       "Database Synchronization: Ensure that every order or booking made on WhatsApp is instantly reflected in your Google Sheets or CRM.",
       "Omnichannel Dashboard: Provide your staff with a unified inbox to oversee all bot conversations and intervene when necessary."
     ],
@@ -594,7 +594,7 @@ export const MOCK_CUSTOM_SOLUTIONS = [
       },
       {
         "title": "Step 3: Bot Engineering",
-        "desc": "Our team codes the logic, integrates the NLP (AI) engine, and connects it to your Stripe account."
+        "desc": "Our team codes the logic, integrates the NLP (AI) engine, and connects it to your Razorpay account."
       },
       {
         "title": "Step 4: Testing & Handoff",
@@ -723,7 +723,7 @@ export const MOCK_CUSTOM_SOLUTIONS = [
       "Role-Based Access: Dedicated dashboards for Admins, Managers, and Sales Reps with strict data visibility rules.",
       "Automated Workflows: Custom logic like \"When deal hits Stage 3, auto-email the client and ping the manager on Slack\".",
       "Data Migration: We will securely import all your messy historical data from Excel or legacy CRMs into the new system.",
-      "API Integrations: Native connections to your existing tools like Stripe, DocuSign, or Twilio."
+      "API Integrations: Native connections to your existing tools like Razorpay, DocuSign, or Twilio."
     ],
     "whats_not_included": [
       "Mobile App Development: This is a responsive web application. A dedicated iOS/Android app is a separate scope.",
@@ -1109,12 +1109,12 @@ export const MOCK_CUSTOM_SOLUTIONS = [
       },
       {
         "title": "Step 4: Launch",
-        "desc": "Connect your Stripe account and start enrolling students."
+        "desc": "Connect your Razorpay account and start enrolling students."
       }
     ],
     "prerequisites": [
       "Your course content (videos, PDFs, quizzes) ready to be uploaded.",
-      "A Stripe account to process student payments."
+      "A Razorpay account to process student payments."
     ],
     "support_policy": "Includes 6 months of comprehensive bug fixes and technical support to ensure smooth video playback for all students.",
     "customization_options": [
@@ -1126,7 +1126,7 @@ export const MOCK_CUSTOM_SOLUTIONS = [
       "Secure Video Hosting",
       "Custom Gamification",
       "Advanced Analytics",
-      "Stripe Integration"
+      "Razorpay Integration"
     ]
   },
   {

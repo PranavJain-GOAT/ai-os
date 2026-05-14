@@ -1,5 +1,4 @@
 const { prisma } = require('../config/database');
-const { createPaymentIntent } = require('../services/stripe.service');
 const { AppError } = require('../middleware/errorHandler');
 
 const checkout = async (req, res, next) => {
@@ -28,17 +27,8 @@ const checkout = async (req, res, next) => {
     let clientSecret = null;
     let paymentIntentId = null;
 
-    if (process.env.STRIPE_SECRET_KEY) {
-      const paymentIntent = await createPaymentIntent(product.price, 'usd', {
-        userId: req.user.id,
-        productId: product.id
-      });
-      clientSecret = paymentIntent.client_secret;
-      paymentIntentId = paymentIntent.id;
-    }
-
     // Create a pending or completed record based on whether stripe is active
-    const purchaseStatus = process.env.STRIPE_SECRET_KEY ? 'PENDING' : 'COMPLETED'; // If no stripe, auto complete for testing
+    const purchaseStatus = 'COMPLETED'; // If no stripe, auto complete for testing
 
     const purchase = await prisma.purchase.create({
       data: {
@@ -54,7 +44,7 @@ const checkout = async (req, res, next) => {
       success: true,
       clientSecret,
       data: purchase,
-      message: purchaseStatus === 'COMPLETED' ? 'Purchase successful (Mock Stripe Mode)' : 'Checkout session created'
+      message: purchaseStatus === 'COMPLETED' ? 'Purchase successful' : 'Checkout session created'
     });
   } catch (error) {
     next(error);

@@ -5,7 +5,7 @@ const { errorHandler } = require('./middleware/errorHandler');
 
 // Route imports
 const routes = require('./routes');
-const webhookRoutes = require('./routes/webhook.routes');
+
 
 const app = express();
 
@@ -13,8 +13,7 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 
-// Webhook route needs raw body for Stripe validation
-app.use('/api/v1/webhooks', express.raw({ type: 'application/json' }), webhookRoutes);
+
 
 // Body parser
 app.use(express.json());

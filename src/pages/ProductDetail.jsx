@@ -126,14 +126,15 @@ export default function ProductDetail() {
                   )}
                 </div>
                 <div className="p-5 flex gap-3">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                    onClick={() => { setShowDemo(false); setShowPayment(true); }}
-                    className="shimmer-btn flex-1 bg-white text-black font-bold text-sm rounded-xl py-3.5 flex items-center justify-center gap-2"
-                  >
-                    <CreditCard className="w-4 h-4" />
-                    Install Now — ${product.price}
-                  </motion.button>
+                  <Link to={`/install/${product.id}?type=instant`} className="flex-1">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                      className="shimmer-btn w-full bg-white text-black font-bold text-sm rounded-xl py-3.5 flex items-center justify-center gap-2"
+                    >
+                      <CreditCard className="w-4 h-4" />
+                      Install Now — ${product.price}
+                    </motion.button>
+                  </Link>
                   <button onClick={() => setShowDemo(false)} className="glass rounded-xl px-5 py-3.5 text-white/60 hover:text-white text-sm transition-colors">
                     Close
                   </button>
@@ -171,14 +172,15 @@ export default function ProductDetail() {
                   {product.description}
                 </p>
               <div className="flex flex-col sm:flex-row gap-3">
-                <motion.button
-                  whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                  onClick={() => setShowPayment(true)}
-                  className="shimmer-btn inline-flex items-center justify-center gap-2 bg-white text-black font-bold text-sm px-7 py-4 rounded-2xl hover:shadow-[0_0_40px_rgba(255,255,255,0.15)] transition-all"
-                >
-                  <CreditCard className="w-4 h-4" />
-                  Get Access — ${product.price}
-                </motion.button>
+                <Link to={`/install/${product.id}?type=instant`} className="block">
+                  <motion.button
+                    whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                    className="shimmer-btn inline-flex items-center justify-center gap-2 bg-white text-black font-bold text-sm px-7 py-4 rounded-2xl hover:shadow-[0_0_40px_rgba(255,255,255,0.15)] transition-all w-full sm:w-auto"
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    Get Access — ${product.price}
+                  </motion.button>
+                </Link>
               </div>
               </div>
               {/* Clean product screenshot with permanently visible demo overlay */}

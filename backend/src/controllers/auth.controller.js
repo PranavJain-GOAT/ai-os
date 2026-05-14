@@ -92,7 +92,7 @@ const getMe = async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
-      select: { id: true, email: true, name: true, role: true, isEmailVerified: true, stripeAccountId: true, createdAt: true }
+      select: { id: true, email: true, name: true, role: true, isEmailVerified: true, createdAt: true }
     });
     res.status(200).json({ success: true, data: user });
   } catch (error) {

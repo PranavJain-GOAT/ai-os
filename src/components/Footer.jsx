@@ -3,9 +3,12 @@ import { motion } from "framer-motion";
 
 export default function Footer() {
   const location = useLocation();
-  const isDetailPage = location.pathname.startsWith("/product/") || location.pathname.startsWith("/custom/");
+  const isNoFooterPage = 
+    location.pathname.startsWith("/product/") || 
+    location.pathname.startsWith("/custom/") || 
+    location.pathname.startsWith("/install/");
 
-  if (isDetailPage) {
+  if (isNoFooterPage) {
     return null;
   }
   return (

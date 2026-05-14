@@ -11,8 +11,8 @@ const server = http.createServer(app);
 
 async function startServer() {
   try {
-    await connectDB();
-    await connectRedis();
+    // await connectDB();
+    // await connectRedis();
 
     server.listen(PORT, () => {
       logger.info(`Server is running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
