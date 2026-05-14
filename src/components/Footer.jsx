@@ -1,7 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 
 export default function Footer() {
+  const location = useLocation();
+  const isDetailPage = location.pathname.startsWith("/product/") || location.pathname.startsWith("/custom/");
+
+  if (isDetailPage) {
+    return null;
+  }
   return (
     <footer className="border-t border-white/6 pt-24 pb-14 relative overflow-hidden">
       <div className="absolute inset-0 dark-grid opacity-20" />

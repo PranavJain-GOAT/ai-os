@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Search, Star, Command, Package, Layers } from "lucide-react";
+import { Search, Star, Command, Package, Layers, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/lib/ThemeContext";
@@ -267,18 +267,24 @@ export default function LiveSearch() {
               </>
             )}
 
-            <div
-              className={`border-t px-4 py-2.5 flex items-center justify-between ${
-                isDark ? "border-white/8 bg-black/40" : "border-black/6 bg-neutral-50"
+            <Link
+              to={`/?search=${encodeURIComponent(query.trim())}`}
+              onClick={() => { setOpen(false); setQuery(""); }}
+              className={`border-t flex items-center justify-between px-4 py-3 transition-colors group ${
+                isDark
+                  ? "border-white/8 bg-black/40 hover:bg-white/5"
+                  : "border-black/6 bg-neutral-50 hover:bg-neutral-100"
               }`}
             >
-              <span className={`text-[10px] font-mono ${isDark ? "text-white/25" : "text-neutral-400"}`}>
-                {totalResults} result{totalResults !== 1 ? "s" : ""} · {allProducts.length + allCustom.length} products indexed
+              <span className={`text-[11px] font-semibold transition-colors ${
+                isDark ? "text-white/50 group-hover:text-white" : "text-neutral-500 group-hover:text-neutral-900"
+              }`}>
+                View all {totalResults} result{totalResults !== 1 ? "s" : ""} for “{query}”
               </span>
-              <span className={`text-[10px] font-mono ${isDark ? "text-white/20" : "text-neutral-300"}`}>
-                esc to close
-              </span>
-            </div>
+              <ArrowUpRight className={`w-3.5 h-3.5 transition-colors ${
+                isDark ? "text-white/25 group-hover:text-white" : "text-neutral-400 group-hover:text-neutral-900"
+              }`} />
+            </Link>
           </motion.div>
         )}
 

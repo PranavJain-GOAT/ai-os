@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MOCK_CUSTOM_SOLUTIONS } from "@/api/mockData";
-import { Star, Wrench, ArrowRight, Check, X, Clock, Users, ExternalLink, MessageCircle, ChevronLeft, Zap, Activity, Play } from "lucide-react";
+import { Star, Wrench, ArrowRight, Check, X, Clock, Users, ExternalLink, MessageCircle, ChevronLeft, Zap, Activity, Play, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function CustomSolutionDetail() {
@@ -77,29 +77,43 @@ export default function CustomSolutionDetail() {
                     <ArrowRight className="w-4 h-4" />
                   </motion.button>
                 </Link>
+                <button
+                  className="w-full sm:w-auto glass rounded-2xl py-4 px-7 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors border border-white/6 hover:border-white/25"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Contact Developer
+                </button>
               </div>
             </div>
             
-            {/* Preview */}
+            {/* Clean product screenshot with permanently visible demo overlay */}
             <motion.div
-              layoutId={`card-${solution.id}`}
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-              className="radial-card rounded-3xl overflow-hidden glass p-1 shadow-2xl"
+              onClick={() => solution.demo_url && window.open(solution.demo_url, '_blank')}
+              className={`rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative ${solution.demo_url ? 'cursor-pointer group' : ''}`}
             >
-              <div className="aspect-video relative flex items-center justify-center bg-black/40 rounded-2xl overflow-hidden border border-white/5">
-                {solution.demo_url ? (
-                  <iframe src={solution.demo_url} className="w-full h-full" title="Demo" />
-                ) : (
-                  <div className="text-center absolute inset-0 flex flex-col justify-center items-center">
-                    <div className="dark-grid absolute inset-0 opacity-40 mix-blend-screen" />
-                    <div className="w-20 h-20 glass rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10 shadow-xl relative z-10">
-                      <Wrench className="w-8 h-8 text-white/50" />
-                    </div>
-                    <p className="text-white/80 font-bold text-xl relative z-10" style={{ fontFamily: 'Georgia, serif' }}>Solution Blueprint</p>
-                    <p className="text-white/30 text-xs font-mono mt-2 relative z-10">CONTACT DEVELOPER FOR LIVE DEMO</p>
+              {solution.demo_url && (
+                <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center z-10 backdrop-blur-[2px]">
+                  <div className="w-16 h-16 glass rounded-full flex items-center justify-center border border-white/20 shadow-2xl mb-4 group-hover:scale-110 group-hover:bg-white/10 transition-all">
+                    <Play className="w-6 h-6 text-white ml-1" />
                   </div>
-                )}
-              </div>
+                  <p className="text-white font-bold text-lg flex items-center gap-2 group-hover:text-white/80 transition-colors" style={{ fontFamily: 'Georgia, serif' }}>
+                    View Demo <ArrowUpRight className="w-5 h-5 text-cyber-green" />
+                  </p>
+                </div>
+              )}
+              {solution.image_url ? (
+                <img
+                  src={solution.image_url}
+                  alt={solution.title}
+                  className={`w-full h-full object-cover ${solution.demo_url ? 'group-hover:scale-105 transition-transform duration-700' : ''}`}
+                  style={{ maxHeight: '420px', objectPosition: 'top' }}
+                />
+              ) : (
+                <div className={`aspect-video bg-white/3 flex items-center justify-center ${solution.demo_url ? 'group-hover:scale-105 transition-transform duration-700' : ''}`}>
+                  <Zap className="w-12 h-12 text-white/10" />
+                </div>
+              )}
             </motion.div>
           </div>
         </div>
@@ -107,8 +121,7 @@ export default function CustomSolutionDetail() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          <div className="lg:col-span-2 space-y-10">
+        <div className="space-y-10">
             {solution.what_it_does && (
               <Section title="What this does">
                 <p className="text-white/50 leading-relaxed" style={{ letterSpacing: '-0.01em' }}>{solution.what_it_does}</p>
@@ -185,54 +198,23 @@ export default function CustomSolutionDetail() {
                 </div>
               </Section>
             )}
-          </div>
 
-          {/* Sticky CTA */}
-          <div>
-            <div className="sticky top-28 space-y-3">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="glass rounded-3xl p-6 border border-white/12 shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
-              >
-                <div className="mb-5">
-                  <div className="text-white font-bold text-3xl" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.03em' }}>
-                    ${solution.price_min} – ${solution.price_max}
-                  </div>
-                  <p className="text-white/30 text-xs font-mono mt-1">ESTIMATED CUSTOM PRICING</p>
+            {solution.preview_images?.length > 0 && (
+              <Section title="Interface Previews">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                  {solution.preview_images.map((img, i) => (
+                    <div key={i} className="rounded-2xl overflow-hidden border border-white/10 glass aspect-video group cursor-pointer relative">
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex items-center justify-center">
+                        <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
+                          <span className="text-white text-xs font-bold tracking-widest uppercase">Expand</span>
+                        </div>
+                      </div>
+                      <img src={img} alt={`Preview ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    </div>
+                  ))}
                 </div>
-                
-                <div className="flex items-center gap-3 text-sm text-white/60 bg-white/5 border border-white/10 p-3 rounded-xl mb-6">
-                  <Clock className="w-4 h-4 text-white/40 shrink-0" />
-                  <span style={{ letterSpacing: '-0.01em' }}>{solution.delivery_days || 5} days estimated build time</span>
-                </div>
-
-                <Link to={`/install/${solution.id}?type=custom`} className="block mb-2.5">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                    className="shimmer-btn w-full bg-white text-black font-bold text-sm rounded-2xl py-4 flex items-center justify-center gap-2 transition-all"
-                  >
-                    Start Project Scoping
-                    <ArrowRight className="w-4 h-4" />
-                  </motion.button>
-                </Link>
-                
-                <button
-                  className="w-full glass rounded-2xl py-3.5 text-white/60 hover:text-white text-sm flex items-center justify-center gap-2 transition-colors border border-white/6 hover:border-white/15"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  Contact Developer
-                </button>
-              </motion.div>
-              
-              {solution.demo_url && (
-                <div className="text-center mt-4">
-                  <a href={solution.demo_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-mono text-white/30 hover:text-white/80 transition-colors">
-                    <ExternalLink className="w-3.5 h-3.5" /> OPEN FULL DEMO
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
+              </Section>
+            )}
         </div>
       </div>
     </div>

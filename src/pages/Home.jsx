@@ -1,6 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { MOCK_PRODUCTS, MOCK_CUSTOM_SOLUTIONS } from "@/api/mockData";
+import { Search, X, Package, Layers, ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import SearchFiltersBar from "../components/home/SearchFiltersBar";
 
 import HeroSection from "../components/home/HeroSection";
 import ModeSwitch from "../components/home/ModeSwitch";
@@ -14,6 +18,214 @@ import DeveloperCTA from "../components/home/DeveloperCTA";
 import WordReveal from "../components/home/WordReveal";
 import { MarketplaceSkeletons } from "../components/home/MarketplaceSkeleton";
 
+const CATEGORY_IMAGES = {
+  chatbot: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&q=80",
+  automation: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80",
+  website: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80",
+  analytics: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80",
+  marketing: "https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=600&q=80",
+  other: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&q=80",
+};
+
+/* ── Dropdown filter pill ────────────────────────────────────── */
+function FilterDropdown({ label, options, value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const active = !!value;
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold border transition-all whitespace-nowrap ${
+          active
+            ? "bg-white text-black border-white"
+            : "glass text-white/60 border-white/15 hover:text-white hover:border-white/30"
+        }`}
+        style={{ letterSpacing: "-0.01em" }}
+      >
+        {active ? value : label}
+        <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full mt-2 left-0 z-50 rounded-2xl overflow-hidden min-w-[160px]"
+            style={{
+              background: "rgba(12,12,12,0.97)",
+              border: "0.5px solid rgba(255,255,255,0.1)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.8)",
+              backdropFilter: "blur(20px)",
+            }}
+          >
+            {active && (
+              <button
+                onClick={() => { onChange(""); setOpen(false); }}
+                className="w-full text-left px-4 py-2.5 text-xs text-white/30 hover:text-white hover:bg-white/5 transition-colors border-b border-white/6 flex items-center gap-2"
+              >
+                <X className="w-3 h-3" /> Clear
+              </button>
+            )}
+            {options.map((opt) => (
+              <button
+                key={opt}
+                onClick={() => { onChange(value === opt ? "" : opt); setOpen(false); }}
+                className={`w-full text-left px-4 py-2.5 text-xs font-medium transition-colors ${
+                  value === opt
+                    ? "text-white bg-white/10"
+                    : "text-white/50 hover:text-white hover:bg-white/5"
+                }`}
+                style={{ letterSpacing: "-0.01em" }}
+              >
+                {opt}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ── Sort dropdown ───────────────────────────────────────────── */
+function SortDropdown({ value, onChange }) {
+  const options = ["Relevance", "Price: Low to High", "Price: High to Low", "Newest"];
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1.5 text-xs font-mono text-white/40 hover:text-white transition-colors"
+      >
+        Sort by: <span className="text-white font-semibold">{value}</span>
+        <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full mt-2 right-0 z-50 rounded-2xl overflow-hidden min-w-[200px]"
+            style={{
+              background: "rgba(12,12,12,0.97)",
+              border: "0.5px solid rgba(255,255,255,0.1)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.8)",
+              backdropFilter: "blur(20px)",
+            }}
+          >
+            {options.map((opt) => (
+              <button
+                key={opt}
+                onClick={() => { onChange(opt); setOpen(false); }}
+                className={`w-full text-left px-4 py-2.5 text-xs font-medium transition-colors ${
+                  value === opt ? "text-white bg-white/10" : "text-white/50 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ── Search result card ──────────────────────────────────────── */
+function SearchResultCard({ item, type, index }) {
+  const isProduct = type === "product";
+  const price = isProduct
+    ? `$${item.price}`
+    : item.price_min === item.price_max
+    ? `$${item.price_min}`
+    : `$${item.price_min}–$${item.price_max}`;
+  const to = isProduct ? `/product/${item.id}` : `/custom/${item.id}`;
+  const img = item.image_url || CATEGORY_IMAGES[item.category] || CATEGORY_IMAGES.other;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: Math.min(index, 8) * 0.04, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <Link to={to} className="group block h-full">
+        <div className="rounded-2xl overflow-hidden flex flex-col h-full border border-white/8 bg-white/3 hover:border-white/16 transition-all duration-300 group-hover:scale-[1.01]">
+          <div className="relative h-44 overflow-hidden shrink-0">
+            <img
+              src={img}
+              alt={item.title}
+              className="w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-80 transition-all duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#020202] via-[#020202]/40 to-transparent" />
+            <div className="absolute top-3 left-3 flex gap-1.5">
+              <span className="cyber-tag flex items-center gap-1">
+                {isProduct ? <Package className="w-2.5 h-2.5" /> : <Layers className="w-2.5 h-2.5" />}
+                {isProduct ? "INSTANT" : "CUSTOM"}
+              </span>
+              {item.category && <span className="cyber-tag">{item.category.toUpperCase()}</span>}
+            </div>
+            {item.badge && (
+              <div className="absolute top-3 right-3">
+                <span className="cyber-tag text-white/90 border-white/20 bg-black/60 backdrop-blur-md">{item.badge}</span>
+              </div>
+            )}
+          </div>
+          <div className="p-4 flex flex-col flex-1">
+            <h3
+              className="text-white font-bold text-sm leading-tight mb-1.5 line-clamp-2"
+              style={{ letterSpacing: "-0.03em", fontFamily: "Georgia, serif" }}
+            >
+              {item.title}
+            </h3>
+            <p className="text-white/40 text-xs leading-relaxed mb-4 line-clamp-2 flex-1 font-mono">
+              {item.description}
+            </p>
+            <div className="flex items-center justify-between mt-auto">
+              <div className="text-white font-bold text-base" style={{ fontFamily: "Georgia, serif", letterSpacing: "-0.04em" }}>
+                {price}
+                <span className="text-white/30 text-[10px] font-normal ml-1 font-mono">
+                  {isProduct ? "one-time" : "from"}
+                </span>
+              </div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="shimmer-btn h-7 px-3 rounded-full bg-white text-black text-[11px] font-bold flex items-center gap-1"
+              >
+                View <ArrowUpRight className="w-3 h-3" />
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════ */
+
 export default function Home() {
   const [mode, setMode] = useState("instant");
   const [products, setProducts] = useState([]);
@@ -21,6 +233,18 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({ category: "", price: "", setupTime: "" });
+
+  // Search results filters (rich)
+  const [searchFilters, setSearchFilters] = useState({
+    category: "",
+    serviceOptions: [],
+    devLevel: [],
+    budget: "",
+    setupTime: "",
+    verifiedOnly: false,
+    hasDemo: false,
+  });
+  const [sortBy, setSortBy] = useState("Relevance");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -31,8 +255,9 @@ export default function Home() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      
-      const isPlaceholder = import.meta.env.VITE_BASE44_APP_ID === 'placeholder_id' || !import.meta.env.VITE_BASE44_APP_ID;
+      const isPlaceholder =
+        import.meta.env.VITE_BASE44_APP_ID === "placeholder_id" ||
+        !import.meta.env.VITE_BASE44_APP_ID;
       if (isPlaceholder) {
         setTimeout(() => {
           setProducts(MOCK_PRODUCTS);
@@ -41,7 +266,6 @@ export default function Home() {
         }, 500);
         return;
       }
-
       try {
         const [p, c] = await Promise.all([
           base44.entities.Product.list(),
@@ -64,12 +288,9 @@ export default function Home() {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
+  /* Normal filtered lists (homepage) */
   const filteredProducts = useMemo(() => {
     let items = products.filter((p) => p.status === "active" || !p.status);
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      items = items.filter((p) => p.title?.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q));
-    }
     if (filters.category) items = items.filter((p) => p.category === filters.category);
     if (filters.price) {
       if (filters.price === "Under $50") items = items.filter((p) => p.price < 50);
@@ -77,17 +298,54 @@ export default function Home() {
       else if (filters.price === "$200+") items = items.filter((p) => p.price > 200);
     }
     return items;
-  }, [products, searchQuery, filters]);
+  }, [products, filters]);
 
   const filteredCustom = useMemo(() => {
     let items = customSolutions.filter((s) => s.status === "active");
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      items = items.filter((s) => s.title?.toLowerCase().includes(q) || s.description?.toLowerCase().includes(q));
-    }
     if (filters.category) items = items.filter((s) => s.category === filters.category);
     return items;
-  }, [customSolutions, searchQuery, filters]);
+  }, [customSolutions, filters]);
+
+  /* Search results: combined + filtered */
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const q = searchQuery.toLowerCase();
+    const match = (item) =>
+      item.title?.toLowerCase().includes(q) ||
+      item.description?.toLowerCase().includes(q) ||
+      item.category?.toLowerCase().includes(q) ||
+      (item.features || []).some((f) => f.toLowerCase().includes(q));
+
+    const matched = [
+      ...products.filter((p) => p.status === "active" || !p.status).filter(match).map((p) => ({ ...p, _type: "product" })),
+      ...customSolutions.filter((s) => s.status === "active").filter(match).map((s) => ({ ...s, _type: "custom" })),
+    ];
+    return matched;
+  }, [products, customSolutions, searchQuery]);
+
+  const displayedResults = useMemo(() => {
+    const { category, serviceOptions, budget, setupTime } = searchFilters;
+    let items = [...searchResults];
+    if (category) items = items.filter((r) => r.category === category);
+    if (serviceOptions?.includes("Instant Setup")) items = items.filter((r) => r._type === "product");
+    if (serviceOptions?.includes("Custom Solutions")) items = items.filter((r) => r._type === "custom");
+    if (budget === "value") items = items.filter((r) => (r.price || r.price_min || 0) < 50);
+    else if (budget === "mid") items = items.filter((r) => (r.price || r.price_min || 0) >= 50 && (r.price || r.price_max || 999) <= 200);
+    else if (budget === "high") items = items.filter((r) => (r.price || r.price_min || 0) > 200);
+    if (setupTime === "express") items = items.filter((r) => (r.setup_time || "").toLowerCase().includes("5") || (r.setup_time || "").toLowerCase().includes("min"));
+    else if (setupTime === "quick") items = items.filter((r) => (r.setup_time || "").toLowerCase().includes("hour"));
+    else if (setupTime === "sameday") items = items.filter((r) => (r.setup_time || "").toLowerCase().includes("day"));
+    if (sortBy === "Price: Low to High") items.sort((a, b) => (a.price || a.price_min || 0) - (b.price || b.price_min || 0));
+    else if (sortBy === "Price: High to Low") items.sort((a, b) => (b.price || b.price_min || 0) - (a.price || a.price_min || 0));
+    return items;
+  }, [searchResults, searchFilters, sortBy]);
+
+  const clearAll = () => {
+    setSearchQuery("");
+    setSearchFilters({ category: "", serviceOptions: [], devLevel: [], budget: "", setupTime: "", verifiedOnly: false, hasDemo: false });
+    setSortBy("Relevance");
+    window.history.replaceState({}, "", "/");
+  };
 
   if (loading) return (
     <div>
@@ -97,17 +355,111 @@ export default function Home() {
     </div>
   );
 
+  /* ════════ SEARCH RESULTS VIEW ════════ */
+  if (searchQuery.trim()) {
+    return (
+      <div className="min-h-screen">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-24">
+
+          {/* Heading */}
+          <div className="mb-6">
+            <p className="text-white/30 text-sm font-mono mb-1">Results for</p>
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1
+                className="text-3xl sm:text-4xl font-bold text-white"
+                style={{ fontFamily: "Georgia, serif", letterSpacing: "-0.04em" }}
+              >
+                {searchQuery}
+              </h1>
+              <button
+                onClick={clearAll}
+                className="flex items-center gap-1 text-xs font-mono text-white/30 hover:text-white border border-white/10 hover:border-white/30 rounded-full px-3 py-1 transition-all"
+              >
+                <X className="w-3 h-3" /> Clear
+              </button>
+            </div>
+          </div>
+
+          {/* Fiverr-style filter bar */}
+          <div className="mb-4">
+            <SearchFiltersBar
+              filters={searchFilters}
+              onFiltersChange={setSearchFilters}
+              results={searchResults}
+            />
+          </div>
+          {/* Sort row */}
+          <div className="flex items-center justify-between mb-3">
+            <div />
+            <div className="flex items-center gap-1.5 text-xs font-mono text-white/40">
+              Sort by:
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-transparent text-white font-semibold text-xs border-none focus:outline-none cursor-pointer"
+              >
+                {["Relevance","Price: Low to High","Price: High to Low","Newest"].map((o) => (
+                  <option key={o} value={o} className="bg-[#0e0e0e]">{o}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Result count + type breakdown */}
+          <div className="flex items-center gap-4 text-[11px] font-mono text-white/25 mb-6">
+            <span>{displayedResults.length} result{displayedResults.length !== 1 ? "s" : ""}</span>
+            <span>·</span>
+            <span><Package className="w-3 h-3 inline mr-1 opacity-50" />{displayedResults.filter((r) => r._type === "product").length} Instant</span>
+            <span><Layers className="w-3 h-3 inline mr-1 opacity-50" />{displayedResults.filter((r) => r._type === "custom").length} Custom</span>
+          </div>
+
+          {/* Grid */}
+          {displayedResults.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-28 glass rounded-3xl"
+            >
+              <Search className="w-10 h-10 mx-auto mb-4 text-white/10" />
+              <p className="text-white font-semibold text-lg mb-1" style={{ fontFamily: "Georgia, serif" }}>
+                No results for "{searchQuery}"
+              </p>
+              <p className="text-white/30 text-sm font-mono">Try adjusting your filters or search again</p>
+              {Object.values(searchFilters).some((v) => (Array.isArray(v) ? v.length > 0 : !!v)) && (
+                <button
+                  onClick={() => setSearchFilters({ category: "", serviceOptions: [], devLevel: [], budget: "", setupTime: "", verifiedOnly: false, hasDemo: false })}
+                  className="mt-4 text-xs font-mono text-white/40 hover:text-white underline transition-colors"
+                >
+                  Clear all filters
+                </button>
+              )}
+            </motion.div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {displayedResults.map((item, i) => (
+                <SearchResultCard key={`${item._type}-${item.id}`} item={item} type={item._type} index={i} />
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+    );
+  }
+
+  /* ════════ NORMAL HOMEPAGE ════════ */
   return (
     <div>
       <HeroSection />
       <WhySection />
-
-      {/* Products section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24" id="instant">
         <ModeSwitch mode={mode} onModeChange={setMode} />
         <SearchFilter
           searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
+          onSearchChange={(val) => {
+            setSearchQuery(val);
+            if (val.trim()) window.history.replaceState({}, "", `/?search=${encodeURIComponent(val.trim())}`);
+            else window.history.replaceState({}, "", "/");
+          }}
           filters={filters}
           onFilterChange={handleFilterChange}
         />
@@ -116,19 +468,18 @@ export default function Home() {
           <div>
             <div className="flex items-center justify-between mb-8">
               <div>
-                <WordReveal text="Instant Setup" tag="h2" className="text-white font-bold text-3xl sm:text-4xl" style={{ fontFamily: 'Georgia,serif', letterSpacing: '-0.04em' }} />
+                <WordReveal text="Instant Setup" tag="h2" className="text-white font-bold text-3xl sm:text-4xl" style={{ fontFamily: "Georgia,serif", letterSpacing: "-0.04em" }} />
                 <p className="text-white/30 text-sm mt-1 font-mono">Install and go live in minutes</p>
               </div>
               <span className="text-white/20 text-xs font-mono">{filteredProducts.length} SOLUTIONS</span>
             </div>
             {filteredProducts.length === 0 ? (
               <div className="text-center py-20 glass rounded-3xl">
-                <p className="text-white font-semibold text-lg mb-1" style={{ fontFamily: 'Georgia,serif' }}>No products found</p>
+                <p className="text-white font-semibold text-lg mb-1" style={{ fontFamily: "Georgia,serif" }}>No products found</p>
                 <p className="text-white/30 text-sm font-mono">Try adjusting your search or filters</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* First card is featured / full-width */}
                 {filteredProducts.slice(0, 1).map((p) => (
                   <div key={p.id} className="sm:col-span-2 lg:col-span-3">
                     <ProductCard product={p} index={0} featured />
@@ -144,14 +495,14 @@ export default function Home() {
           <div id="custom">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <WordReveal text="Custom Solutions" tag="h2" className="text-white font-bold text-3xl sm:text-4xl" style={{ fontFamily: 'Georgia,serif', letterSpacing: '-0.04em' }} />
+                <WordReveal text="Custom Solutions" tag="h2" className="text-white font-bold text-3xl sm:text-4xl" style={{ fontFamily: "Georgia,serif", letterSpacing: "-0.04em" }} />
                 <p className="text-white/30 text-sm mt-1 font-mono">Developer-built, tailored to your needs</p>
               </div>
               <span className="text-white/20 text-xs font-mono">{filteredCustom.length} SOLUTIONS</span>
             </div>
             {filteredCustom.length === 0 ? (
               <div className="text-center py-20 glass rounded-3xl">
-                <p className="text-white font-semibold text-lg mb-1" style={{ fontFamily: 'Georgia,serif' }}>No custom solutions found</p>
+                <p className="text-white font-semibold text-lg mb-1" style={{ fontFamily: "Georgia,serif" }}>No custom solutions found</p>
                 <p className="text-white/30 text-sm font-mono">Try adjusting your search or filters</p>
               </div>
             ) : (
@@ -164,7 +515,6 @@ export default function Home() {
           </div>
         )}
       </section>
-
       <UseCasesSection />
       <TrustSection />
       <DeveloperCTA />
