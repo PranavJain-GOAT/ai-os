@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MOCK_PRODUCTS } from "@/api/mockData";
-import { Check, X, Clock, Users, Play, CreditCard, Shield, Loader2, ChevronLeft, Zap, Activity, ArrowUpRight } from "lucide-react";
+import { Check, X, Clock, Users, Play, CreditCard, Shield, Loader2, ChevronLeft, Zap, Activity, ArrowUpRight, ListChecks, LifeBuoy } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 
@@ -292,6 +292,51 @@ export default function ProductDetail() {
                   </div>
                 </Section>
               )}
+
+              {product.how_it_works?.length > 0 && (
+                <Section title="How it Works">
+                  <div className="space-y-4">
+                    {product.how_it_works.map((step, idx) => (
+                      <div key={idx} className="glass rounded-2xl p-5 border border-white/6 flex gap-4">
+                        <div className="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center font-mono font-bold shrink-0 mt-0.5">
+                          {idx + 1}
+                        </div>
+                        <div>
+                          <h4 className="text-white font-bold mb-1">{step.title}</h4>
+                          <p className="text-sm text-white/60 leading-relaxed">{step.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+              )}
+
+              {product.prerequisites?.length > 0 && (
+                <Section title="Prerequisites & Requirements">
+                  <div className="glass rounded-2xl p-5 border border-white/6">
+                    <ul className="space-y-3">
+                      {product.prerequisites.map((req, idx) => (
+                        <li key={idx} className="flex items-start gap-3">
+                          <ListChecks className="w-4 h-4 mt-0.5 text-white/40 shrink-0" />
+                          <span className="text-sm text-white/70">{req}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </Section>
+              )}
+
+              {product.support_policy && (
+                <Section title="Support & Maintenance">
+                  <div className="glass rounded-2xl p-5 border border-white/6 flex items-start gap-4">
+                    <LifeBuoy className="w-5 h-5 mt-0.5 text-[#4D9FFF] shrink-0" />
+                    <div>
+                      <h4 className="text-white font-bold mb-1">Post-Purchase Support</h4>
+                      <p className="text-sm text-white/60 leading-relaxed">{product.support_policy}</p>
+                    </div>
+                  </div>
+                </Section>
+              )}
               
               {product.preview_images?.length > 0 && (
                 <Section title="Interface Previews">
@@ -309,6 +354,8 @@ export default function ProductDetail() {
                   </div>
                 </Section>
               )}
+
+
           </div>
         </div>
       </motion.div>

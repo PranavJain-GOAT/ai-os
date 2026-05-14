@@ -182,15 +182,7 @@ export default function HeroSection() {
              transition={{ type: "spring", stiffness: 70, damping: 30 }}
              className="relative z-10"
           >
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-cyber-green pulse-aura" />
-              <span className="text-[11px] font-mono text-white/60 tracking-widest uppercase">v2.0 · AI Marketplace</span>
-            </motion.div>
+
 
             <motion.h1
               initial={{ opacity: 0, y: 24 }}

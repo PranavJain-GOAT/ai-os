@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MOCK_CUSTOM_SOLUTIONS } from "@/api/mockData";
-import { Star, Wrench, ArrowRight, Check, X, Clock, Users, ExternalLink, MessageCircle, ChevronLeft, Zap, Activity, Play, ArrowUpRight } from "lucide-react";
+import { Star, Wrench, ArrowRight, Check, X, Clock, Users, ExternalLink, MessageCircle, ChevronLeft, Zap, Activity, Play, ArrowUpRight, ListChecks, LifeBuoy, CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function CustomSolutionDetail() {
@@ -71,18 +71,12 @@ export default function CustomSolutionDetail() {
                 <Link to={`/install/${solution.id}?type=custom`} className="block">
                   <motion.button
                     whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                    className="shimmer-btn w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-black font-bold text-sm px-7 py-4 rounded-2xl hover:shadow-[0_0_40px_rgba(255,255,255,0.15)] transition-all"
+                    className="shimmer-btn inline-flex items-center justify-center gap-2 bg-white text-black font-bold text-sm px-7 py-4 rounded-2xl hover:shadow-[0_0_40px_rgba(255,255,255,0.15)] transition-all w-full sm:w-auto"
                   >
-                    Start Custom Setup
-                    <ArrowRight className="w-4 h-4" />
+                    <CreditCard className="w-4 h-4" />
+                    Purchase Setup — Starts at ${solution.price_min}
                   </motion.button>
                 </Link>
-                <button
-                  className="w-full sm:w-auto glass rounded-2xl py-4 px-7 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors border border-white/6 hover:border-white/25"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  Contact Developer
-                </button>
               </div>
             </div>
             
@@ -195,6 +189,51 @@ export default function CustomSolutionDetail() {
                       <span className="text-sm text-white/60" style={{ letterSpacing: '-0.01em' }}>{f}</span>
                     </motion.div>
                   ))}
+                </div>
+              </Section>
+            )}
+
+            {solution.how_it_works?.length > 0 && (
+              <Section title="How it Works">
+                <div className="space-y-4">
+                  {solution.how_it_works.map((step, idx) => (
+                    <div key={idx} className="glass rounded-2xl p-5 border border-white/6 flex gap-4">
+                      <div className="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center font-mono font-bold shrink-0 mt-0.5">
+                        {idx + 1}
+                      </div>
+                      <div>
+                        <h4 className="text-white font-bold mb-1">{step.title}</h4>
+                        <p className="text-sm text-white/60 leading-relaxed">{step.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Section>
+            )}
+
+            {solution.prerequisites?.length > 0 && (
+              <Section title="Prerequisites & Requirements">
+                <div className="glass rounded-2xl p-5 border border-white/6">
+                  <ul className="space-y-3">
+                    {solution.prerequisites.map((req, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <ListChecks className="w-4 h-4 mt-0.5 text-white/40 shrink-0" />
+                        <span className="text-sm text-white/70">{req}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Section>
+            )}
+
+            {solution.support_policy && (
+              <Section title="Support & Maintenance">
+                <div className="glass rounded-2xl p-5 border border-white/6 flex items-start gap-4">
+                  <LifeBuoy className="w-5 h-5 mt-0.5 text-[#4D9FFF] shrink-0" />
+                  <div>
+                    <h4 className="text-white font-bold mb-1">Post-Purchase Support</h4>
+                    <p className="text-sm text-white/60 leading-relaxed">{solution.support_policy}</p>
+                  </div>
                 </div>
               </Section>
             )}
