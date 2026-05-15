@@ -29,16 +29,7 @@ export default function Footer() {
         </span>
       </div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-         <div className="text-center mb-24 max-w-3xl mx-auto flex flex-col items-center">
-            <h2 className="text-white font-bold tracking-tight mb-8 leading-tight" style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(3rem, 6vw, 4.5rem)' }}>
-               Ready to automate your business?
-            </h2>
-            <Link to="/auth">
-               <motion.button whileHover={{ scale: 1.05 }} className="shimmer-btn bg-white text-black font-bold text-lg px-10 py-5 rounded-full shadow-[0_0_40px_rgba(255,255,255,0.2)] transition-transform">
-                  Deploy Now — Free
-               </motion.button>
-            </Link>
-         </div>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
