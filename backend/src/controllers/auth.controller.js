@@ -29,7 +29,7 @@ const register = async (req, res, next) => {
       data: {
         email,
         password: hashedPassword,
-        name: name || `${firstName || ''} ${lastName || ''}`.trim() || 'User',
+        name: name || `${firstName} ${lastName}`,
         firstName,
         lastName,
         country,
@@ -118,15 +118,7 @@ const getMe = async (req, res, next) => {
 };
 
 const googleLogin = (req, res) => {
-  let redirectUri = process.env.GOOGLE_REDIRECT_URI;
-  
-  // If request comes from localhost, use a local redirect URI if it's likely registered
-  const referer = req.headers.referer || '';
-  if (referer.includes('localhost') || referer.includes('127.0.0.1')) {
-    redirectUri = 'http://localhost:3000/auth/google/callback';
-  }
-
-  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=profile email`;
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&response_type=code&scope=profile email`;
   res.redirect(url);
 };
 
@@ -139,13 +131,11 @@ const googleCallback = async (req, res, next) => {
 
   try {
     // Exchange authorization code for access token
-    const redirectUri = req.body.redirectUri || req.query.redirectUri || process.env.GOOGLE_REDIRECT_URI;
-    
     const { data } = await axios.post('https://oauth2.googleapis.com/token', {
       client_id: process.env.GOOGLE_CLIENT_ID,
       client_secret: process.env.GOOGLE_CLIENT_SECRET,
       code,
-      redirect_uri: redirectUri,
+      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
       grant_type: 'authorization_code',
     });
 

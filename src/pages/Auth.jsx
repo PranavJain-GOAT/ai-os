@@ -12,7 +12,7 @@ export default function Auth() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [tab, setTab] = useState("signup"); // Default to signup as per user request
-  const [step, setStep] = useState(2); // Start directly at the form for "anyone" to join quickly
+  const [step, setStep] = useState(1); // 1: Role Selection, 2: Form Details
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -46,11 +46,9 @@ export default function Auth() {
     }
 
     setLoading(true);
-    setError("");
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 
-        (window.location.hostname === 'localhost' ? 'http://localhost:5000/api/v1' : '/api/v1');
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
       const endpoint = tab === "login" ? "/auth/login" : "/auth/register";
       
       const payload = tab === "login" 
@@ -181,8 +179,7 @@ export default function Auth() {
                     <Button
                       variant="outline"
                       onClick={() => {
-                        const apiUrl = import.meta.env.VITE_API_URL || 
-                          (window.location.hostname === 'localhost' ? 'http://localhost:5000/api/v1' : '/api/v1');
+                        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
                         window.location.href = `${apiUrl}/auth/google`;
                       }}
                       className="h-12 rounded-full gap-3 border border-gray-300 hover:bg-gray-50 font-bold text-gray-700 shadow-sm transition-all"
@@ -207,43 +204,22 @@ export default function Auth() {
                     {error && <div className="p-4 rounded-xl bg-red-50 text-red-600 text-sm font-semibold border border-red-100">{error}</div>}
 
                     {tab === "signup" && (
-                      <div className="flex p-1 bg-gray-100 rounded-xl mb-6">
-                        <button
-                          type="button"
-                          onClick={() => setForm(p => ({ ...p, role: 'client' }))}
-                          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${form.role === 'client' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                        >
-                          <Briefcase className="w-4 h-4" />
-                          I'm a Client
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setForm(p => ({ ...p, role: 'developer' }))}
-                          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${form.role === 'developer' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                        >
-                          <Code2 className="w-4 h-4" />
-                          I'm a Freelancer
-                        </button>
-                      </div>
-                    )}
-
-                    {tab === "signup" && (
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-sm font-bold text-gray-900">First name (optional)</label>
+                          <label className="text-sm font-bold text-gray-900">First name</label>
                           <input
+                            required
                             value={form.firstName}
                             onChange={e => setForm(p => ({ ...p, firstName: e.target.value }))}
-                            placeholder="John"
                             className="w-full px-4 py-3 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-sm font-bold text-gray-900">Last name (optional)</label>
+                          <label className="text-sm font-bold text-gray-900">Last name</label>
                           <input
+                            required
                             value={form.lastName}
                             onChange={e => setForm(p => ({ ...p, lastName: e.target.value }))}
-                            placeholder="Doe"
                             className="w-full px-4 py-3 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
                           />
                         </div>
@@ -257,7 +233,6 @@ export default function Auth() {
                         required
                         value={form.email}
                         onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
-                        placeholder="email@example.com"
                         className="w-full px-4 py-3 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
                       />
                     </div>
@@ -296,15 +271,6 @@ export default function Auth() {
                           </div>
                         </div>
                       )}
-                      
-                      {tab === "signup" && form.password && isPasswordValid && (
-                        <div className="flex items-center gap-2 px-1 mt-1">
-                          <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                            <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}><path d="M5 13l4 4L19 7" /></svg>
-                          </div>
-                          <span className="text-xs font-bold text-green-600">Password is secure</span>
-                        </div>
-                      )}
                     </div>
 
                     {tab === "signup" && (
@@ -319,11 +285,6 @@ export default function Auth() {
                           <option value="United States">United States</option>
                           <option value="United Kingdom">United Kingdom</option>
                           <option value="Canada">Canada</option>
-                          <option value="Australia">Australia</option>
-                          <option value="Germany">Germany</option>
-                          <option value="France">France</option>
-                          <option value="Japan">Japan</option>
-                          <option value="Other">Other</option>
                         </select>
                       </div>
                     )}

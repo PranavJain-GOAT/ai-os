@@ -39,14 +39,8 @@ export default function AuthCallback() {
       // 2. If code is in URL (Frontend received redirect from Google)
       if (code) {
         try {
-          const currentUrl = window.location.origin + window.location.pathname;
-          const apiUrl = import.meta.env.VITE_API_URL || 
-            (window.location.hostname === 'localhost' ? 'http://localhost:5000/api/v1' : '/api/v1');
-          
-          const response = await axios.post(`${apiUrl}/auth/google/callback`, { 
-            code,
-            redirectUri: currentUrl 
-          });
+          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+          const response = await axios.post(`${apiUrl}/auth/google/callback`, { code });
           
           if (response.data.success) {
             const { accessToken, refreshToken, user } = response.data.data;
