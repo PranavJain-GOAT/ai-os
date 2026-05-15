@@ -2,10 +2,12 @@ import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import axios from "axios";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function AuthCallback() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -15,11 +17,21 @@ export default function AuthCallback() {
 
       // 1. If tokens are already in URL (Backend handled redirect)
       if (accessToken && refreshToken) {
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
-        
-        const role = localStorage.getItem('user_role') || 'client';
-        navigate(role === 'developer' ? '/developer' : '/client');
+        // We need to fetch the user details to call login()
+        try {
+          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+          const res = await axios.get(`${apiUrl}/users/me`, {
+            headers: { Authorization: `Bearer ${accessToken}` }
+          });
+          if (res.data.success) {
+            login(res.data.data, { accessToken, refreshToken });
+            navigate(res.data.data.role === 'DEVELOPER' ? '/developer' : '/client');
+            return;
+          }
+        } catch (e) {
+          console.error("Token login error:", e);
+        }
+        navigate('/auth');
         return;
       }
 
@@ -31,9 +43,7 @@ export default function AuthCallback() {
           
           if (response.data.success) {
             const { accessToken, refreshToken, user } = response.data.data;
-            localStorage.setItem("accessToken", accessToken);
-            localStorage.setItem("refreshToken", refreshToken);
-            
+            login(user, { accessToken, refreshToken });
             navigate(user.role === 'DEVELOPER' ? '/developer' : '/client');
           } else {
             navigate('/auth?error=google_auth_failed');

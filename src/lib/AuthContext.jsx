@@ -1,7 +1,5 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
-import { appParams } from '@/lib/app-params';
-import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
@@ -9,44 +7,59 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
-  const [isLoadingPublicSettings, setIsLoadingPublicSettings] = useState(true);
   const [authError, setAuthError] = useState(null);
-  const [appPublicSettings, setAppPublicSettings] = useState(null); // Contains only { id, public_settings }
 
-  useEffect(() => {
-    checkAppState();
+  const fetchUser = useCallback(async () => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      setIsLoadingAuth(false);
+      setIsAuthenticated(false);
+      return;
+    }
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+      const response = await axios.get(`${apiUrl}/users/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.data.success) {
+        setUser(response.data.data);
+        setIsAuthenticated(true);
+      } else {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      console.error("Auth Error:", error);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoadingAuth(false);
+    }
   }, []);
 
-  const checkAppState = async () => {
-    // UI Prototype Mode: Bypass backend authentication checks to prevent 20-second hangs on reload
-    setAppPublicSettings({ name: 'Deployra Prototype' });
-    setIsLoadingPublicSettings(false);
-    setIsLoadingAuth(false);
-    setIsAuthenticated(true);
-    setUser({ id: 'demo123', name: 'Demo User' });
-  };
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
-  const checkUserAuth = async () => {
-    setIsLoadingAuth(false);
+  const login = (userData, tokens) => {
+    localStorage.setItem('accessToken', tokens.accessToken);
+    localStorage.setItem('refreshToken', tokens.refreshToken);
+    localStorage.setItem('user_role', userData.role.toLowerCase());
+    setUser(userData);
     setIsAuthenticated(true);
   };
 
-  const logout = (shouldRedirect = true) => {
+  const logout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user_role');
     setUser(null);
     setIsAuthenticated(false);
-
-    if (shouldRedirect) {
-      // Use the SDK's logout method which handles token cleanup and redirect
-      base44.auth.logout(window.location.href);
-    } else {
-      // Just remove the token without redirect
-      base44.auth.logout();
-    }
-  };
-
-  const navigateToLogin = () => {
-    // Use the SDK's redirectToLogin method
-    base44.auth.redirectToLogin(window.location.href);
+    window.location.href = '/';
   };
 
   return (
@@ -54,12 +67,10 @@ export const AuthProvider = ({ children }) => {
       user,
       isAuthenticated,
       isLoadingAuth,
-      isLoadingPublicSettings,
       authError,
-      appPublicSettings,
+      login,
       logout,
-      navigateToLogin,
-      checkAppState
+      checkAuth: fetchUser
     }}>
       {children}
     </AuthContext.Provider>

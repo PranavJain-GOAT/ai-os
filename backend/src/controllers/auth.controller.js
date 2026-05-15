@@ -6,7 +6,7 @@ const { AppError } = require('../middleware/errorHandler');
 
 const register = async (req, res, next) => {
   try {
-    const { email, password, name, role } = req.body;
+    const { email, password, name, role, firstName, lastName, country } = req.body;
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
@@ -20,7 +20,10 @@ const register = async (req, res, next) => {
       data: {
         email,
         password: hashedPassword,
-        name,
+        name: name || `${firstName} ${lastName}`,
+        firstName,
+        lastName,
+        country,
         role: userRole
       }
     });
@@ -146,6 +149,8 @@ const googleCallback = async (req, res, next) => {
         data: {
           email: profile.email,
           name: profile.name || profile.given_name,
+          firstName: profile.given_name,
+          lastName: profile.family_name,
           googleId: profile.id,
           isEmailVerified: true,
           role: 'CLIENT' // Default role

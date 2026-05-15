@@ -33,6 +33,9 @@ model User {
   password        String?
   googleId        String?        @unique
   name            String
+  firstName       String?
+  lastName        String?
+  country         String?        @default("India")
   role            Role           @default(CLIENT)
   isEmailVerified Boolean        @default(false)
   stripeAccountId String?        // For developers to receive payments via Stripe Connect

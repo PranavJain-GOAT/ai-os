@@ -1,9 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
-import { Search, Menu, X, Code2 } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Search, Menu, X, Code2, User, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LiveSearch from "./home/LiveSearch";
 import { useTheme } from "@/lib/ThemeContext";
+import { useAuth } from "@/lib/AuthContext";
 
 function GlitchLink({ to, label, onClick }) {
   const [glitching, setGlitching] = useState(false);
@@ -26,18 +27,17 @@ function GlitchLink({ to, label, onClick }) {
       style={{ letterSpacing: '-0.01em' }}
     >
       <span className={glitching ? 'glitch-text' : ''}>{label}</span>
-      {glitching && (
-        <span aria-hidden className="absolute inset-0 flex items-center justify-center text-nova-blue/60 pointer-events-none" style={{ clipPath: 'inset(50% 0 0 0)', transform: 'translateX(2px)', fontSize: 'inherit', letterSpacing: 'inherit', fontFamily: 'inherit', fontWeight: 'inherit' }}>{label}</span>
-      )}
     </Link>
   );
 }
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [profileOpen, setProfileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { isDark } = useTheme();
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => {
@@ -48,44 +48,38 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      window.location.href = `/?search=${encodeURIComponent(searchQuery.trim())}`;
-      setSearchQuery("");
-    }
-  };
-
-  // Theme-aware nav colors
   const navBg = scrolled
-    ? isDark
-      ? 'rgba(5,5,5,0.88)'
-      : 'rgba(250,250,250,0.92)'
+    ? isDark ? 'rgba(5,5,5,0.88)' : 'rgba(250,250,250,0.92)'
     : 'transparent';
+  
   const navBorder = scrolled
-    ? isDark
-      ? '1px solid rgba(255,255,255,0.08)'
-      : '1px solid rgba(0,0,0,0.08)'
+    ? isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.08)'
     : '1px solid transparent';
 
   const logoTextColor = isDark ? '#ffffff' : '#0a0a0a';
-  const logoBgColor = isDark ? '#ffffff' : '#0a0a0a';
-  const logoLetterColor = isDark ? '#000000' : '#ffffff';
+
+  const getInitials = (name) => {
+    if (!name) return "U";
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+  };
+
+  const handleDashboard = () => {
+    setProfileOpen(false);
+    const role = user?.role?.toLowerCase() || 'client';
+    navigate(`/${role}`);
+  };
 
   return (
     <>
-      {/* Full-width Nav */}
       <div className="fixed top-0 left-0 right-0 z-50 px-0">
         <motion.nav
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           style={{
             borderBottom: navBorder,
             background: navBg,
             backdropFilter: scrolled ? 'blur(12px)' : 'none',
             WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
-            transition: 'all 0.35s cubic-bezier(0.22,1,0.36,1)',
             height: '60px',
           }}
           className="flex items-center px-4 sm:px-8"
@@ -108,7 +102,7 @@ export default function Navbar() {
             </Link>
 
             {/* Live Search */}
-            <div className="flex-1 hidden md:block">
+            <div className="flex-1 hidden md:block px-8">
               <LiveSearch />
             </div>
 
@@ -118,27 +112,73 @@ export default function Navbar() {
                 { label: "Marketplace", to: "/" },
                 { label: "Features", to: "/features" },
                 { label: "About", to: "/about" },
-                { label: "Pricing", to: "/pricing" },
               ].map((item) => (
                 <GlitchLink key={item.label} to={item.to} label={item.label} />
               ))}
             </div>
 
-            {/* CTAs */}
-            <div className="flex items-center gap-2 shrink-0 ml-auto z-50">
-              <Link to="/auth" className="hidden sm:flex">
-                <motion.button
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.96 }}
-                  className={`flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full transition-all ${isDark
-                      ? 'text-white/60 hover:text-white border border-white/12 hover:border-white/25'
-                      : 'text-neutral-500 hover:text-neutral-900 border border-black/12 hover:border-black/25'
-                    }`}
-                >
-                  <Code2 className="w-3 h-3 hidden sm:block" />
-                  Sign In
-                </motion.button>
-              </Link>
+            {/* CTAs & Profile */}
+            <div className="flex items-center gap-4 shrink-0 ml-auto z-50">
+              {isAuthenticated ? (
+                <div className="relative group">
+                  <button
+                    onMouseEnter={() => setProfileOpen(true)}
+                    className="flex items-center gap-2 p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center text-[10px] font-bold text-white dark:text-gray-900 border border-gray-200 dark:border-white/10">
+                      {getInitials(user?.name)}
+                    </div>
+                    <ChevronDown className={`w-3.5 h-3.5 text-gray-500 transition-transform ${profileOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {profileOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        onMouseLeave={() => setProfileOpen(false)}
+                        className="absolute right-0 mt-1 w-56 bg-white dark:bg-[#121212] rounded-2xl shadow-2xl border border-gray-100 dark:border-white/5 p-2 overflow-hidden"
+                      >
+                        <div className="px-3 py-3 border-b border-gray-50 dark:border-white/5 mb-1">
+                          <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{user?.name}</p>
+                          <p className="text-[10px] text-gray-400 truncate mt-0.5">{user?.email}</p>
+                        </div>
+                        
+                        <button
+                          onClick={handleDashboard}
+                          className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 rounded-xl transition-all"
+                        >
+                          <LayoutDashboard className="w-4 h-4" />
+                          Dashboard
+                        </button>
+                        
+                        <button
+                          onClick={logout}
+                          className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-all"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Logout
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <Link to="/auth" className="flex">
+                  <motion.button
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
+                    className={`flex items-center gap-1.5 text-xs font-bold px-5 py-2 rounded-full transition-all ${isDark
+                        ? 'text-white bg-white/10 hover:bg-white/20'
+                        : 'text-white bg-gray-900 hover:bg-gray-800'
+                      }`}
+                  >
+                    Sign In
+                  </motion.button>
+                </Link>
+              )}
+              
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className={`md:hidden p-1 ${isDark ? 'text-white/60 hover:text-white' : 'text-neutral-500 hover:text-neutral-900'}`}
@@ -150,47 +190,47 @@ export default function Navbar() {
         </motion.nav>
       </div>
 
-      {/* Mobile Dropdown */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="fixed top-20 left-4 right-4 z-40 glass rounded-2xl p-4 space-y-2"
-            style={
-              !isDark
-                ? { background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(0,0,0,0.08)' }
-                : {}
-            }
+            className="fixed top-20 left-4 right-4 z-40 glass rounded-2xl p-4 space-y-2 bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-xl border border-gray-100 dark:border-white/5"
           >
-            <div className="pb-2">
-              <LiveSearch />
-            </div>
             {[
               { label: "Marketplace", to: "/" },
               { label: "Features", to: "/features" },
               { label: "About", to: "/about" },
-              { label: "Pricing", to: "/pricing" },
-              { label: "Login / Sign Up", to: "/auth" },
+              ...(isAuthenticated ? [
+                { label: "Dashboard", to: user?.role === 'DEVELOPER' ? '/developer' : '/client' },
+              ] : [
+                { label: "Login / Sign Up", to: "/auth" }
+              ])
             ].map((item) => (
               <Link
                 key={item.label}
                 to={item.to}
                 onClick={() => setMobileOpen(false)}
-                className={`block text-sm px-3 py-2.5 rounded-xl transition-colors ${isDark
+                className={`block text-sm px-3 py-3 rounded-xl font-bold transition-colors ${isDark
                     ? 'text-white/60 hover:text-white hover:bg-white/6'
-                    : 'text-neutral-500 hover:text-neutral-900 hover:bg-black/6'
+                    : 'text-neutral-600 hover:text-neutral-900 hover:bg-black/6'
                   }`}
               >
                 {item.label}
               </Link>
             ))}
+            {isAuthenticated && (
+              <button
+                onClick={logout}
+                className="w-full text-left block text-sm px-3 py-3 rounded-xl font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+              >
+                Logout
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Spacer for fixed nav */}
       <div className="h-16" />
     </>
   );
