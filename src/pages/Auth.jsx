@@ -182,7 +182,7 @@ export default function Auth() {
                             required
                             value={form.firstName}
                             onChange={e => setForm(p => ({ ...p, firstName: e.target.value }))}
-                            className="w-full px-4 py-3 bg-white border border-gray-200 focus:border-gray-900 rounded-xl outline-none transition-all"
+                            className="w-full px-4 py-3 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
                           />
                         </div>
                         <div className="space-y-2">
@@ -191,7 +191,7 @@ export default function Auth() {
                             required
                             value={form.lastName}
                             onChange={e => setForm(p => ({ ...p, lastName: e.target.value }))}
-                            className="w-full px-4 py-3 bg-white border border-gray-200 focus:border-gray-900 rounded-xl outline-none transition-all"
+                            className="w-full px-4 py-3 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
                           />
                         </div>
                       </div>
@@ -204,7 +204,7 @@ export default function Auth() {
                         required
                         value={form.email}
                         onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
-                        className="w-full px-4 py-3 bg-white border border-gray-200 focus:border-gray-900 rounded-xl outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
                       />
                     </div>
 
@@ -217,7 +217,7 @@ export default function Auth() {
                           value={form.password}
                           onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
                           placeholder="Password (8 or more characters)"
-                          className="w-full px-4 py-3 pr-12 bg-white border border-gray-200 focus:border-gray-900 rounded-xl outline-none transition-all"
+                          className="w-full px-4 py-3 pr-12 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
                         />
                         <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                           {showPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -231,7 +231,7 @@ export default function Auth() {
                         <select
                           value={form.country}
                           onChange={e => setForm(p => ({ ...p, country: e.target.value }))}
-                          className="w-full px-4 py-3 bg-white border border-gray-200 focus:border-gray-900 rounded-xl outline-none transition-all appearance-none font-medium cursor-pointer"
+                          className="w-full px-4 py-3 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all appearance-none font-medium cursor-pointer text-gray-900"
                         >
                           <option value="India">India</option>
                           <option value="United States">United States</option>
