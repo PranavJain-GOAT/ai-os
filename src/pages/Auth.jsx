@@ -48,13 +48,12 @@ export default function Auth() {
     setLoading(true);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 
-        (window.location.hostname === 'localhost' ? 'http://localhost:5000/api/v1' : '/api/v1');
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
       const endpoint = tab === "login" ? "/auth/login" : "/auth/register";
       
       const payload = tab === "login" 
         ? { email: form.email, password: form.password }
-        : { ...form, name: `${form.firstName || ''} ${form.lastName || ''}`.trim() || 'User' };
+        : { ...form, name: `${form.firstName} ${form.lastName}` };
 
       const response = await axios.post(`${apiUrl}${endpoint}`, payload);
 
@@ -64,9 +63,7 @@ export default function Auth() {
         navigate('/');
       }
     } catch (err) {
-      console.error("Auth Error Details:", err);
-      const msg = err.response?.data?.message || err.message || "Something went wrong. Please check your connection and try again.";
-      setError(msg);
+      setError(err.response?.data?.message || "Authentication failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
@@ -182,8 +179,7 @@ export default function Auth() {
                     <Button
                       variant="outline"
                       onClick={() => {
-                        const apiUrl = import.meta.env.VITE_API_URL || 
-                          (window.location.hostname === 'localhost' ? 'http://localhost:5000/api/v1' : '/api/v1');
+                        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
                         window.location.href = `${apiUrl}/auth/google`;
                       }}
                       className="h-12 rounded-full gap-3 border border-gray-300 hover:bg-gray-50 font-bold text-gray-700 shadow-sm transition-all"
@@ -210,20 +206,20 @@ export default function Auth() {
                     {tab === "signup" && (
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-sm font-bold text-gray-900">First name (optional)</label>
+                          <label className="text-sm font-bold text-gray-900">First name</label>
                           <input
+                            required
                             value={form.firstName}
                             onChange={e => setForm(p => ({ ...p, firstName: e.target.value }))}
-                            placeholder="e.g. Jane"
                             className="w-full px-4 py-3 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-sm font-bold text-gray-900">Last name (optional)</label>
+                          <label className="text-sm font-bold text-gray-900">Last name</label>
                           <input
+                            required
                             value={form.lastName}
                             onChange={e => setForm(p => ({ ...p, lastName: e.target.value }))}
-                            placeholder="e.g. Doe"
                             className="w-full px-4 py-3 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
                           />
                         </div>
