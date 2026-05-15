@@ -22,6 +22,7 @@ import WebhookOrchestrator from './pages/developer/WebhookOrchestrator';
 import LogsDebugger from './pages/developer/LogsDebugger';
 import AiSandbox from './pages/developer/AiSandbox';
 import Auth from './pages/Auth';
+import AuthCallback from './pages/AuthCallback';
 import Pricing from './pages/Pricing';
 import PaymentHistory from './pages/PaymentHistory';
 import About from './pages/About';
@@ -97,7 +98,8 @@ const AuthenticatedApp = () => {
       </Route>
       
       <Route path="/auth" element={<Auth />} />
-
+      <Route path="/auth/google/callback" element={<AuthCallback />} />
+      <Route path="/auth-callback" element={<AuthCallback />} />
     </Routes>
   );
 };

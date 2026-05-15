@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const axios = require('axios');
 const { prisma } = require('../config/database');
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/jwt');
 const { AppError } = require('../middleware/errorHandler');
@@ -100,9 +101,97 @@ const getMe = async (req, res, next) => {
   }
 };
 
+const googleLogin = (req, res) => {
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&response_type=code&scope=profile email`;
+  res.redirect(url);
+};
+
+const googleCallback = async (req, res, next) => {
+  const code = req.query.code || req.body.code;
+
+  if (!code) {
+    return next(new AppError('No code provided', 400));
+  }
+
+  try {
+    // Exchange authorization code for access token
+    const { data } = await axios.post('https://oauth2.googleapis.com/token', {
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      code,
+      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+      grant_type: 'authorization_code',
+    });
+
+    const { access_token } = data;
+
+    // Use access_token to fetch user profile
+    const { data: profile } = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+
+    // Check if user exists
+    let user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { googleId: profile.id },
+          { email: profile.email }
+        ]
+      }
+    });
+
+    if (!user) {
+      // Create new user if doesn't exist
+      user = await prisma.user.create({
+        data: {
+          email: profile.email,
+          name: profile.name || profile.given_name,
+          googleId: profile.id,
+          isEmailVerified: true,
+          role: 'CLIENT' // Default role
+        }
+      });
+    } else if (!user.googleId) {
+      // Link googleId if user existed via email
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { googleId: profile.id, isEmailVerified: true }
+      });
+    }
+
+    const accessToken = generateAccessToken(user.id, user.role);
+    const refreshToken = generateRefreshToken(user.id);
+
+    // If it's a GET request (direct from Google), redirect to frontend
+    if (req.method === 'GET') {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth-callback?accessToken=${accessToken}&refreshToken=${refreshToken}`);
+    }
+
+    // If it's a POST request (from frontend), return JSON
+    res.status(200).json({
+      success: true,
+      data: {
+        user: { id: user.id, email: user.email, name: user.name, role: user.role },
+        accessToken,
+        refreshToken
+      }
+    });
+  } catch (error) {
+    console.error('Google Auth Error:', error.response?.data || error.message);
+    if (req.method === 'GET') {
+      return res.redirect(`${process.env.FRONTEND_URL}/login?error=google_auth_failed`);
+    }
+    next(new AppError('Google authentication failed', 401));
+  }
+};
+
+
+
 module.exports = {
   register,
   login,
   refresh,
-  getMe
+  getMe,
+  googleLogin,
+  googleCallback
 };

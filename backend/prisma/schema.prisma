@@ -30,7 +30,8 @@ enum PurchaseStatus {
 model User {
   id              String         @id @default(uuid())
   email           String         @unique
-  password        String
+  password        String?
+  googleId        String?        @unique
   name            String
   role            Role           @default(CLIENT)
   isEmailVerified Boolean        @default(false)
