@@ -62,20 +62,14 @@ export const AuthProvider = ({ children }) => {
     window.location.href = '/';
   };
 
-  const navigateToLogin = useCallback(() => {
-    window.location.href = '/auth';
-  }, []);
-
   return (
     <AuthContext.Provider value={{
       user,
       isAuthenticated,
       isLoadingAuth,
-      isLoadingPublicSettings: false, // Added for App.jsx compatibility
       authError,
       login,
       logout,
-      navigateToLogin, // Added missing function
       checkAuth: fetchUser
     }}>
       {children}

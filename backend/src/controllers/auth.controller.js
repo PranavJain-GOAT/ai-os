@@ -58,10 +58,6 @@ const login = async (req, res, next) => {
       return next(new AppError('Invalid email or password', 401));
     }
 
-    if (!user.password && user.googleId) {
-      return next(new AppError('This account is linked with Google. Please use "Continue with Google" to log in.', 401));
-    }
-
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return next(new AppError('Invalid email or password', 401));

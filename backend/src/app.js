@@ -24,11 +24,6 @@ app.get('/api/v1/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'API is running' });
 });
 
-// Dummy handler for Base44 SDK internal requests to avoid 500s
-app.all(['/api/apps/*', '/api/analytics/*'], (req, res) => {
-  res.status(200).json({ success: true, message: 'Base44 internal endpoint' });
-});
-
 // Mounted Routes
 app.use('/api/v1', routes);
 
