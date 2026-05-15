@@ -12,7 +12,7 @@ export default function Auth() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [tab, setTab] = useState("signup"); // Default to signup as per user request
-  const [step, setStep] = useState(1); // 1: Role Selection, 2: Form Details
+  const [step, setStep] = useState(2); // Start directly at the form for "anyone" to join quickly
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -46,9 +46,11 @@ export default function Auth() {
     }
 
     setLoading(true);
+    setError("");
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+      const apiUrl = import.meta.env.VITE_API_URL || 
+        (window.location.hostname === 'localhost' ? 'http://localhost:5000/api/v1' : '/api/v1');
       const endpoint = tab === "login" ? "/auth/login" : "/auth/register";
       
       const payload = tab === "login" 
@@ -156,19 +158,33 @@ export default function Auth() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="max-w-xl mx-auto w-full"
               >
-                <div className="text-center mb-10">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-2 font-heading tracking-tight">
-                    {tab === "login" ? "Welcome back" : "Sign up to find work you love"}
-                  </h1>
+                <div className="relative mb-10">
+                  <button 
+                    onClick={() => {
+                      if (tab === "signup") setStep(1);
+                      else setTab("signup");
+                    }}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-full transition-colors group"
+                  >
+                    <ArrowLeft className="w-5 h-5 text-gray-500 group-hover:text-gray-900" />
+                  </button>
+                  <div className="text-center">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-2 font-heading tracking-tight">
+                      {tab === "login" ? "Welcome back" : "Sign up to find work you love"}
+                    </h1>
+                  </div>
                 </div>
 
                 <div className="space-y-4">
                   {/* OAuth Section */}
                   <div className="grid grid-cols-1 gap-3">
-
                     <Button
                       variant="outline"
-                      onClick={() => window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1'}/auth/google`}
+                      onClick={() => {
+                        const apiUrl = import.meta.env.VITE_API_URL || 
+                          (window.location.hostname === 'localhost' ? 'http://localhost:5000/api/v1' : '/api/v1');
+                        window.location.href = `${apiUrl}/auth/google`;
+                      }}
                       className="h-12 rounded-full gap-3 border border-gray-300 hover:bg-gray-50 font-bold text-gray-700 shadow-sm transition-all"
                     >
                       <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -191,22 +207,43 @@ export default function Auth() {
                     {error && <div className="p-4 rounded-xl bg-red-50 text-red-600 text-sm font-semibold border border-red-100">{error}</div>}
 
                     {tab === "signup" && (
+                      <div className="flex p-1 bg-gray-100 rounded-xl mb-6">
+                        <button
+                          type="button"
+                          onClick={() => setForm(p => ({ ...p, role: 'client' }))}
+                          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${form.role === 'client' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        >
+                          <Briefcase className="w-4 h-4" />
+                          I'm a Client
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setForm(p => ({ ...p, role: 'developer' }))}
+                          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${form.role === 'developer' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        >
+                          <Code2 className="w-4 h-4" />
+                          I'm a Freelancer
+                        </button>
+                      </div>
+                    )}
+
+                    {tab === "signup" && (
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-sm font-bold text-gray-900">First name</label>
+                          <label className="text-sm font-bold text-gray-900">First name (optional)</label>
                           <input
-                            required
                             value={form.firstName}
                             onChange={e => setForm(p => ({ ...p, firstName: e.target.value }))}
+                            placeholder="John"
                             className="w-full px-4 py-3 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-sm font-bold text-gray-900">Last name</label>
+                          <label className="text-sm font-bold text-gray-900">Last name (optional)</label>
                           <input
-                            required
                             value={form.lastName}
                             onChange={e => setForm(p => ({ ...p, lastName: e.target.value }))}
+                            placeholder="Doe"
                             className="w-full px-4 py-3 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
                           />
                         </div>
@@ -220,6 +257,7 @@ export default function Auth() {
                         required
                         value={form.email}
                         onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                        placeholder="email@example.com"
                         className="w-full px-4 py-3 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
                       />
                     </div>
@@ -240,7 +278,7 @@ export default function Auth() {
                         </button>
                       </div>
 
-                      {tab === "signup" && form.password && (
+                      {tab === "signup" && form.password && !isPasswordValid && (
                         <div className="p-4 bg-gray-50 rounded-xl space-y-2 mt-2 border border-gray-100">
                           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Password Requirements</p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
@@ -258,6 +296,15 @@ export default function Auth() {
                           </div>
                         </div>
                       )}
+                      
+                      {tab === "signup" && form.password && isPasswordValid && (
+                        <div className="flex items-center gap-2 px-1 mt-1">
+                          <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                            <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}><path d="M5 13l4 4L19 7" /></svg>
+                          </div>
+                          <span className="text-xs font-bold text-green-600">Password is secure</span>
+                        </div>
+                      )}
                     </div>
 
                     {tab === "signup" && (
@@ -272,6 +319,11 @@ export default function Auth() {
                           <option value="United States">United States</option>
                           <option value="United Kingdom">United Kingdom</option>
                           <option value="Canada">Canada</option>
+                          <option value="Australia">Australia</option>
+                          <option value="Germany">Germany</option>
+                          <option value="France">France</option>
+                          <option value="Japan">Japan</option>
+                          <option value="Other">Other</option>
                         </select>
                       </div>
                     )}

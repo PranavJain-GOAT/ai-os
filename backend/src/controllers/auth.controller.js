@@ -8,12 +8,12 @@ const register = async (req, res, next) => {
   try {
     const { email, password, name, role, firstName, lastName, country } = req.body;
 
-    // Password validation for manual signup
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    // Password validation for manual signup - more permissive characters but keeps complexity
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
     if (!passwordRegex.test(password)) {
       return res.status(400).json({ 
         success: false, 
-        message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character." 
+        message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (@$!%*?&)." 
       });
     }
 
@@ -29,7 +29,7 @@ const register = async (req, res, next) => {
       data: {
         email,
         password: hashedPassword,
-        name: name || `${firstName} ${lastName}`,
+        name: name || `${firstName || ''} ${lastName || ''}`.trim() || 'User',
         firstName,
         lastName,
         country,
@@ -56,6 +56,10 @@ const login = async (req, res, next) => {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return next(new AppError('Invalid email or password', 401));
+    }
+
+    if (!user.password && user.googleId) {
+      return next(new AppError('This account is linked with Google. Please use "Continue with Google" to log in.', 401));
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -114,7 +118,15 @@ const getMe = async (req, res, next) => {
 };
 
 const googleLogin = (req, res) => {
-  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&response_type=code&scope=profile email`;
+  let redirectUri = process.env.GOOGLE_REDIRECT_URI;
+  
+  // If request comes from localhost, use a local redirect URI if it's likely registered
+  const referer = req.headers.referer || '';
+  if (referer.includes('localhost') || referer.includes('127.0.0.1')) {
+    redirectUri = 'http://localhost:3000/auth/google/callback';
+  }
+
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=profile email`;
   res.redirect(url);
 };
 
@@ -127,11 +139,13 @@ const googleCallback = async (req, res, next) => {
 
   try {
     // Exchange authorization code for access token
+    const redirectUri = req.body.redirectUri || req.query.redirectUri || process.env.GOOGLE_REDIRECT_URI;
+    
     const { data } = await axios.post('https://oauth2.googleapis.com/token', {
       client_id: process.env.GOOGLE_CLIENT_ID,
       client_secret: process.env.GOOGLE_CLIENT_SECRET,
       code,
-      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+      redirect_uri: redirectUri,
       grant_type: 'authorization_code',
     });
 

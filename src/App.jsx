@@ -36,12 +36,16 @@ const DevProfile = () => <div className="p-8 text-white">Profile & Skill Managem
 const DevMessaging = () => <div className="p-8 text-white">Developer Messaging System coming soon</div>;
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const auth = useAuth();
+  const isLoadingAuth = auth?.isLoadingAuth;
+  const isLoadingPublicSettings = auth?.isLoadingPublicSettings || false;
+  const authError = auth?.authError;
+  const navigateToLogin = auth?.navigateToLogin || (() => window.location.href = '/auth');
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center">
+      <div className="fixed inset-0 flex items-center justify-center bg-white">
         <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
       </div>
     );
