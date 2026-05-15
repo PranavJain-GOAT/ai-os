@@ -8,6 +8,15 @@ const register = async (req, res, next) => {
   try {
     const { email, password, name, role, firstName, lastName, country } = req.body;
 
+    // Password validation for manual signup
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character." 
+      });
+    }
+
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return next(new AppError('Email already in use', 400));

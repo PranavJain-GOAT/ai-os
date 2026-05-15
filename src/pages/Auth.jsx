@@ -26,9 +26,25 @@ export default function Auth() {
     role: "client"
   });
 
+  const passwordRequirements = [
+    { label: "8+ characters", regex: /.{8,}/ },
+    { label: "1 uppercase letter", regex: /[A-Z]/ },
+    { label: "1 lowercase letter", regex: /[a-z]/ },
+    { label: "1 number", regex: /[0-9]/ },
+    { label: "1 special character (@$!%*?&)", regex: /[@$!%*?&]/ },
+  ];
+
+  const isPasswordValid = passwordRequirements.every(req => req.regex.test(form.password));
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (tab === "signup" && !isPasswordValid) {
+      setError("Please fulfill all password requirements.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -217,12 +233,31 @@ export default function Auth() {
                           value={form.password}
                           onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
                           placeholder="Password (8 or more characters)"
-                          className="w-full px-4 py-3 pr-12 bg-white border border-gray-300 focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium"
+                          className={`w-full px-4 py-3 pr-12 bg-white border ${tab === "signup" && form.password ? (isPasswordValid ? 'border-green-500' : 'border-red-300') : 'border-gray-300'} focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium`}
                         />
                         <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-                          {showPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                          {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
+
+                      {tab === "signup" && form.password && (
+                        <div className="p-4 bg-gray-50 rounded-xl space-y-2 mt-2 border border-gray-100">
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Password Requirements</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
+                            {passwordRequirements.map((req, i) => {
+                              const met = req.regex.test(form.password);
+                              return (
+                                <div key={i} className="flex items-center gap-2">
+                                  <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center transition-colors ${met ? 'bg-green-500' : 'bg-gray-200'}`}>
+                                    {met && <svg className="w-2 h-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}><path d="M5 13l4 4L19 7" /></svg>}
+                                  </div>
+                                  <span className={`text-[11px] font-medium transition-colors ${met ? 'text-green-700' : 'text-gray-400'}`}>{req.label}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {tab === "signup" && (
