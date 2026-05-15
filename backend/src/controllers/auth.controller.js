@@ -23,7 +23,7 @@ const register = async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const userRole = role === 'DEVELOPER' ? 'DEVELOPER' : 'CLIENT';
+    const userRole = (role?.toUpperCase() === 'DEVELOPER') ? 'DEVELOPER' : 'CLIENT';
 
     const user = await prisma.user.create({
       data: {

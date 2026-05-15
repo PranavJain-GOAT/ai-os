@@ -2,9 +2,12 @@ const Joi = require('joi');
 
 const registerSchema = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
-  name: Joi.string().required(),
-  role: Joi.string().valid('CLIENT', 'DEVELOPER').optional()
+  password: Joi.string().min(8).required(),
+  name: Joi.string().optional(),
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  country: Joi.string().required(),
+  role: Joi.string().valid('CLIENT', 'DEVELOPER', 'client', 'developer').optional()
 });
 
 const loginSchema = Joi.object({
