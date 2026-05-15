@@ -214,9 +214,15 @@ export default function LiveSearch() {
           value={query}
           onChange={(e) => handleInput(e.target.value)}
           onFocus={() => query && setOpen(totalResults > 0)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && query.trim()) {
+              window.location.href = `/?search=${encodeURIComponent(query.trim())}`;
+              setOpen(false);
+            }
+          }}
           placeholder={dataLoaded ? "Search AI solutions..." : "Loading products…"}
           disabled={!dataLoaded}
-          className={`w-full pl-11 pr-20 py-3.5 rounded-2xl text-sm focus:outline-none transition-all shadow-[0_8px_32px_rgba(0,0,0,0.4)] ${
+          className={`w-full pl-11 pr-24 py-3.5 rounded-2xl text-sm focus:outline-none transition-all shadow-[0_8px_32px_rgba(0,0,0,0.4)] ${
             isDark
               ? "text-white placeholder:text-white/25"
               : "text-neutral-900 placeholder:text-neutral-400"
@@ -230,11 +236,19 @@ export default function LiveSearch() {
           }}
         />
         <div
-          className={`absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs font-mono pointer-events-none ${
-            isDark ? "text-white/20" : "text-neutral-400"
-          }`}
+          className={`absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3`}
         >
-          <Command className="w-3 h-3" />K
+          {query.trim() && (
+            <button 
+              onClick={() => window.location.href = `/?search=${encodeURIComponent(query.trim())}`}
+              className={`p-1.5 rounded-lg transition-colors ${isDark ? "bg-white/10 hover:bg-white/20 text-white" : "bg-black/5 hover:bg-black/10 text-black"}`}
+            >
+              <Search className="w-3.5 h-3.5" />
+            </button>
+          )}
+          <div className={`flex items-center gap-1 text-xs font-mono pointer-events-none ${isDark ? "text-white/20" : "text-neutral-400"}`}>
+            <Command className="w-3 h-3" />K
+          </div>
         </div>
       </div>
 

@@ -8,12 +8,13 @@ import SearchFiltersBar from "../components/home/SearchFiltersBar";
 
 import HeroSection from "../components/home/HeroSection";
 import ModeSwitch from "../components/home/ModeSwitch";
-import SearchFilter from "../components/home/SearchFilter";
+import MarketplaceFilter from "../components/home/MarketplaceFilter";
 import ProductCard from "../components/home/ProductCard";
 import CustomCard from "../components/home/CustomCard";
 import UseCasesSection from "../components/home/UseCasesSection";
 import TrustSection from "../components/home/TrustSection";
-import WhySection from "../components/home/WhySection";
+import HowWorksSection from "../components/home/HowWorksSection";
+import WhyBusinessesSection from "../components/home/WhyBusinessesSection";
 import DeveloperCTA from "../components/home/DeveloperCTA";
 import WordReveal from "../components/home/WordReveal";
 import { MarketplaceSkeletons } from "../components/home/MarketplaceSkeleton";
@@ -171,51 +172,48 @@ function SearchResultCard({ item, type, index }) {
       transition={{ duration: 0.4, delay: Math.min(index, 8) * 0.04, ease: [0.22, 1, 0.36, 1] }}
     >
       <Link to={to} className="group block h-full">
-        <div className="rounded-2xl overflow-hidden flex flex-col h-full border border-white/8 bg-white/3 hover:border-white/16 transition-all duration-300 group-hover:scale-[1.01]">
-          <div className="relative h-44 overflow-hidden shrink-0">
+        <div className="rounded-xl overflow-hidden flex flex-col h-full bg-white/[0.02] border border-white/5 hover:border-white/15 transition-all duration-300">
+          <div className="relative aspect-[16/10] overflow-hidden shrink-0">
             <img
               src={img}
               alt={item.title}
-              className="w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-80 transition-all duration-700"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#020202] via-[#020202]/40 to-transparent" />
-            <div className="absolute top-3 left-3 flex gap-1.5">
-              <span className="cyber-tag flex items-center gap-1">
-                {isProduct ? <Package className="w-2.5 h-2.5" /> : <Layers className="w-2.5 h-2.5" />}
-                {isProduct ? "INSTANT" : "CUSTOM"}
-              </span>
-              {item.category && <span className="cyber-tag">{item.category.toUpperCase()}</span>}
+            <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10">
+                    <span className="text-white text-lg">♡</span>
+                </div>
             </div>
-            {item.badge && (
-              <div className="absolute top-3 right-3">
-                <span className="cyber-tag text-white/90 border-white/20 bg-black/60 backdrop-blur-md">{item.badge}</span>
-              </div>
-            )}
           </div>
+          
           <div className="p-4 flex flex-col flex-1">
-            <h3
-              className="text-white font-bold text-sm leading-tight mb-1.5 line-clamp-2"
-              style={{ letterSpacing: "-0.03em", fontFamily: "Georgia, serif" }}
-            >
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-full bg-white/10 overflow-hidden border border-white/10">
+                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${item.seller_name || 'dev'}`} alt="avatar" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[11px] font-bold text-white hover:underline leading-none">{item.seller_name || "AlphaDev"}</span>
+                <span className="text-[9px] text-white/30 font-mono">Level 2 Seller</span>
+              </div>
+            </div>
+
+            <h3 className="text-white text-[14px] leading-tight mb-2 line-clamp-2 font-medium group-hover:text-white/80 transition-colors">
               {item.title}
             </h3>
-            <p className="text-white/40 text-xs leading-relaxed mb-4 line-clamp-2 flex-1 font-mono">
-              {item.description}
-            </p>
-            <div className="flex items-center justify-between mt-auto">
-              <div className="text-white font-bold text-base" style={{ fontFamily: "Georgia, serif", letterSpacing: "-0.04em" }}>
-                {price}
-                <span className="text-white/30 text-[10px] font-normal ml-1 font-mono">
-                  {isProduct ? "one-time" : "from"}
-                </span>
+
+            <div className="flex items-center gap-1 mb-4">
+              <span className="text-white text-xs font-bold">★ 5.0</span>
+              <span className="text-white/20 text-[11px]">(1k+)</span>
+            </div>
+
+            <div className="mt-auto pt-3 border-t border-white/5 flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="text-[10px] text-white/30 font-bold uppercase tracking-tight">Starting at</span>
+                <span className="text-white font-bold text-base leading-none">{price}</span>
               </div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="shimmer-btn h-7 px-3 rounded-full bg-white text-black text-[11px] font-bold flex items-center gap-1"
-              >
-                View <ArrowUpRight className="w-3 h-3" />
-              </motion.div>
+              {item.badge && (
+                <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] font-bold text-white/40 uppercase">{item.badge}</span>
+              )}
             </div>
           </div>
         </div>
@@ -366,10 +364,10 @@ export default function Home() {
             <p className="text-white/30 text-sm font-mono mb-1">Results for</p>
             <div className="flex items-center gap-3 flex-wrap">
               <h1
-                className="text-3xl sm:text-4xl font-bold text-white"
+                className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2"
                 style={{ fontFamily: "Georgia, serif", letterSpacing: "-0.04em" }}
               >
-                {searchQuery}
+                Results for <span className="text-white/90">"{searchQuery}"</span>
               </h1>
               <button
                 onClick={clearAll}
@@ -450,16 +448,11 @@ export default function Home() {
   return (
     <div>
       <HeroSection />
-      <WhySection />
+      <HowWorksSection />
+      <WhyBusinessesSection />
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24" id="instant">
         <ModeSwitch mode={mode} onModeChange={setMode} />
-        <SearchFilter
-          searchQuery={searchQuery}
-          onSearchChange={(val) => {
-            setSearchQuery(val);
-            if (val.trim()) window.history.replaceState({}, "", `/?search=${encodeURIComponent(val.trim())}`);
-            else window.history.replaceState({}, "", "/");
-          }}
+        <MarketplaceFilter
           filters={filters}
           onFilterChange={handleFilterChange}
         />

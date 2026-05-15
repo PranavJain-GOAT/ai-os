@@ -19,7 +19,8 @@ export default function ProductCard({ product, index, featured = false }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.45, delay: Math.min(index, 6) * 0.06, ease: [0.22, 1, 0.36, 1] }}
       className="h-full"
     >

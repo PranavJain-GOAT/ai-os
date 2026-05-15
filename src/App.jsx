@@ -12,6 +12,7 @@ import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
 import CustomSolutionDetail from './pages/CustomSolutionDetail';
 import InstallFlow from './pages/InstallFlow';
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 import DevDashboard from './pages/developer/Dashboard';
 import DevListings from './pages/developer/Listings';
 import AddProduct from './pages/developer/AddProduct';
@@ -59,6 +60,7 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
+        <Route path="/admin" element={<AdminDashboard />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/product/:id" element={<ProductDetail />} />
