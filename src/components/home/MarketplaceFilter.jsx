@@ -7,8 +7,7 @@ import {
   Globe, 
   BarChart3, 
   Target, 
-  Grid2X2,
-  Search
+  Grid2X2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -94,14 +93,7 @@ export default function MarketplaceFilter({ filters, onFilterChange }) {
       {/* Filter Row */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3 flex-1 min-w-[300px]">
-          <div className="relative flex-1 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-white transition-colors" />
-            <input 
-              type="text" 
-              placeholder="Search for solutions..."
-              className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-white/20 transition-all"
-            />
-          </div>
+
           <div className="flex items-center gap-2 flex-wrap">
             <DropPanel 
               label={filters.serviceOptions?.length ? `Service options (${filters.serviceOptions.length})` : "Service options"} 

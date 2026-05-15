@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Zap, Play, Copy, Check, Search } from "lucide-react";
+import { ArrowRight, Zap, Play, Copy, Check } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 import MagneticButton from "../MagneticButton";
 import confetti from "canvas-confetti";
@@ -155,7 +155,7 @@ const STATS = [
 
 export default function HeroSection() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [heroSearch, setHeroSearch] = useState("");
+
   const { isDark } = useTheme();
 
   const handleMouseMove = (e) => {
@@ -206,69 +206,9 @@ export default function HeroSection() {
               Enterprise-ready agents installed directly into your workflow. Skip the 6-month build cycle and deploy instantly.
             </motion.p>
 
-            {/* Enhanced Marketplace Search Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.35 }}
-              className="relative max-w-xl mb-12 group"
-            >
-              <div className="absolute -inset-1 bg-gradient-to-r from-cyber-green/20 to-nova-blue/20 rounded-2xl blur opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
-              <div className={`relative flex items-center p-2 rounded-2xl transition-all shadow-2xl ${
-                isDark
-                  ? 'bg-white/[0.03] border border-white/10 backdrop-blur-xl focus-within:border-white/20'
-                  : 'bg-black/[0.03] border border-black/10 focus-within:border-black/20'
-              }`}>
-                <Search className={`w-5 h-5 ml-4 ${isDark ? 'text-white/30' : 'text-black/30'}`} />
-                <input 
-                  type="text" 
-                  placeholder="Search for AI agents, automations, or SaaS kits..." 
-                  value={heroSearch}
-                  onChange={(e) => setHeroSearch(e.target.value)}
-                  className={`w-full bg-transparent border-none text-base px-4 py-3 focus:outline-none font-mono ${
-                    isDark
-                      ? 'text-white placeholder:text-white/20'
-                      : 'text-neutral-900 placeholder:text-neutral-400'
-                  }`}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && heroSearch.trim()) {
-                       window.location.href = `/?search=${encodeURIComponent(heroSearch.trim())}`;
-                    }
-                  }}
-                />
-                <button
-                  onClick={() => {
-                    if (heroSearch.trim()) window.location.href = `/?search=${encodeURIComponent(heroSearch.trim())}`;
-                  }}
-                  className="shimmer-btn shrink-0 inline-flex items-center gap-2 font-bold text-sm px-6 py-3 rounded-xl hover:scale-[1.02] transition-all"
-                  style={{
-                    background: isDark ? '#ffffff' : '#0a0a0a',
-                    color: isDark ? '#000000' : '#ffffff',
-                  }}
-                >
-                   Search
-                </button>
-              </div>
-            </motion.div>
 
-            {/* Trending Categories Pills */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.5 }}
-              className="flex flex-wrap items-center gap-3"
-            >
-              <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mr-2">Trending:</span>
-              {["AI Agents", "Automations", "SaaS Kits", "Voice Bots", "CRM Tools"].map((cat) => (
-                <Link
-                  key={cat}
-                  to={`/?search=${encodeURIComponent(cat)}`}
-                  className="px-4 py-1.5 rounded-full glass border border-white/5 text-[11px] font-mono text-white/40 hover:text-white hover:border-white/20 hover:bg-white/5 transition-all"
-                >
-                  {cat}
-                </Link>
-              ))}
-            </motion.div>
+
+
 
 
           </motion.div>
