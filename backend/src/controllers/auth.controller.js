@@ -8,12 +8,11 @@ const register = async (req, res, next) => {
   try {
     const { email, password, name, role, firstName, lastName, country } = req.body;
 
-    // Password validation for manual signup - more permissive characters but keeps complexity
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
-    if (!passwordRegex.test(password)) {
+    // Password validation for manual signup - permissive but keeps minimum length
+    if (!password || password.length < 8) {
       return res.status(400).json({ 
         success: false, 
-        message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (@$!%*?&)." 
+        message: "Password must be at least 8 characters long." 
       });
     }
 
@@ -29,7 +28,7 @@ const register = async (req, res, next) => {
       data: {
         email,
         password: hashedPassword,
-        name: name || `${firstName} ${lastName}`,
+        name: name || `${firstName || ''} ${lastName || ''}`.trim() || 'User',
         firstName,
         lastName,
         country,
