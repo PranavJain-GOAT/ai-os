@@ -235,8 +235,8 @@ export default function Auth() {
                           placeholder="Password (8 or more characters)"
                           className={`w-full px-4 py-3 pr-12 bg-white border ${tab === "signup" && form.password ? (isPasswordValid ? 'border-green-500' : 'border-red-300') : 'border-gray-300'} focus:border-gray-900 rounded-xl outline-none transition-all text-gray-900 font-medium`}
                         />
-                        <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-                          {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors">
+                          {showPass ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                         </button>
                       </div>
 
