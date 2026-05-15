@@ -25,7 +25,7 @@ export default function AuthCallback() {
           });
           if (res.data.success) {
             login(res.data.data, { accessToken, refreshToken });
-            navigate(res.data.data.role === 'DEVELOPER' ? '/developer' : '/client');
+            navigate('/');
             return;
           }
         } catch (e) {
@@ -44,7 +44,7 @@ export default function AuthCallback() {
           if (response.data.success) {
             const { accessToken, refreshToken, user } = response.data.data;
             login(user, { accessToken, refreshToken });
-            navigate(user.role === 'DEVELOPER' ? '/developer' : '/client');
+            navigate('/');
           } else {
             navigate('/auth?error=google_auth_failed');
           }

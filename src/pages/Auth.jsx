@@ -60,7 +60,7 @@ export default function Auth() {
       if (response.data.success) {
         const { accessToken, refreshToken, user } = response.data.data;
         login(user, { accessToken, refreshToken });
-        navigate(user.role === 'DEVELOPER' ? '/developer' : '/client');
+        navigate('/');
       }
     } catch (err) {
       setError(err.response?.data?.message || "Authentication failed. Please check your credentials.");
