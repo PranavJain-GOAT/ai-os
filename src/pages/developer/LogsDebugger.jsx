@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Terminal, Filter, Search, ChevronDown, Download, Trash2, Circle } from "lucide-react";
+import { motion } from "framer-motion";
+import { Search, Trash2 } from "lucide-react";
 
 /* ─────────────────────────────────────────────
    MOCK LOG DATA

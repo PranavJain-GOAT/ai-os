@@ -3,12 +3,23 @@ const { prisma } = require('../config/database');
 
 const authenticate = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    let token = null;
+
+    // Check for token in cookies first
+    if (req.cookies && req.cookies.accessToken) {
+      token = req.cookies.accessToken;
+    } else {
+      // Fallback to Authorization header
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
+      }
+    }
+
+    if (!token) {
       return res.status(401).json({ success: false, message: 'Authentication required' });
     }
 
-    const token = authHeader.split(' ')[1];
     const decoded = verifyAccessToken(token);
 
     const user = await prisma.user.findUnique({ where: { id: decoded.userId } });

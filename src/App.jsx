@@ -2,10 +2,11 @@ import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from '@/lib/ThemeContext';
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import Layout from './components/Layout';
 import DevLayout from './components/developer/DevLayout';
 import Home from './pages/Home';
@@ -61,7 +62,12 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
+      {/* Admin Route Protection */}
+      <Route element={<ProtectedRoute allowedRoles={['ADMIN']} unauthenticatedElement={<Navigate to="/auth" replace />} />}>
         <Route path="/admin" element={<AdminDashboard />} />
+      </Route>
+
+      {/* Public Routes */}
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/product/:id" element={<ProductDetail />} />
@@ -73,28 +79,35 @@ const AuthenticatedApp = () => {
         <Route path="/features" element={<Features />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
-      <Route element={<DevLayout />}>
-        <Route path="/developer" element={<DevDashboard />} />
-        <Route path="/developer/listings" element={<DevListings />} />
-        <Route path="/developer/add" element={<AddProduct />} />
-        <Route path="/developer/edit/:id" element={<AddProduct />} />
-        <Route path="/developer/analytics" element={<DevAnalytics />} />
-        <Route path="/developer/api-vault" element={<ApiVault />} />
-        <Route path="/developer/webhooks" element={<WebhookOrchestrator />} />
-        <Route path="/developer/logs" element={<LogsDebugger />} />
-        <Route path="/developer/sandbox" element={<AiSandbox />} />
-        <Route path="/developer/messages" element={<DevMessaging />} />
-        <Route path="/developer/profile" element={<DevProfile />} />
+
+      {/* Developer Routes Protection */}
+      <Route element={<ProtectedRoute allowedRoles={['DEVELOPER', 'ADMIN']} unauthenticatedElement={<Navigate to="/auth" replace />} />}>
+        <Route element={<DevLayout />}>
+          <Route path="/developer" element={<DevDashboard />} />
+          <Route path="/developer/listings" element={<DevListings />} />
+          <Route path="/developer/add" element={<AddProduct />} />
+          <Route path="/developer/edit/:id" element={<AddProduct />} />
+          <Route path="/developer/analytics" element={<DevAnalytics />} />
+          <Route path="/developer/api-vault" element={<ApiVault />} />
+          <Route path="/developer/webhooks" element={<WebhookOrchestrator />} />
+          <Route path="/developer/logs" element={<LogsDebugger />} />
+          <Route path="/developer/sandbox" element={<AiSandbox />} />
+          <Route path="/developer/messages" element={<DevMessaging />} />
+          <Route path="/developer/profile" element={<DevProfile />} />
+        </Route>
       </Route>
 
-      <Route element={<ClientLayout />}>
-        <Route path="/client" element={<PurchaseHistory />} />
-        <Route path="/client/orders" element={<OrderManagement />} />
-        <Route path="/client/hire" element={<HireDevelopers />} />
-        <Route path="/client/integrations" element={<Integrations />} />
-        <Route path="/client/wishlist" element={<Wishlist />} />
-        <Route path="/client/messages" element={<Messaging />} />
-        <Route path="/client/billing" element={<Billing />} />
+      {/* Client Routes Protection */}
+      <Route element={<ProtectedRoute allowedRoles={['CLIENT', 'ADMIN']} unauthenticatedElement={<Navigate to="/auth" replace />} />}>
+        <Route element={<ClientLayout />}>
+          <Route path="/client" element={<PurchaseHistory />} />
+          <Route path="/client/orders" element={<OrderManagement />} />
+          <Route path="/client/hire" element={<HireDevelopers />} />
+          <Route path="/client/integrations" element={<Integrations />} />
+          <Route path="/client/wishlist" element={<Wishlist />} />
+          <Route path="/client/messages" element={<Messaging />} />
+          <Route path="/client/billing" element={<Billing />} />
+        </Route>
       </Route>
       
       <Route path="/auth" element={<Auth />} />

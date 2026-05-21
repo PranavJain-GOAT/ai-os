@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
-import { ArrowRight, Globe, Shield, Zap, Users, Mail, MapPin, Twitter, Linkedin, Github, Phone, MessageSquare } from "lucide-react";
+import { ArrowRight, Globe, Shield, Zap, Users, Mail, Twitter, Linkedin, Github, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/lib/ThemeContext";
 

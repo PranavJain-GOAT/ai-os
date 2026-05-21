@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Webhook, Plus, Send, RefreshCw, Trash2, CheckCircle,
-  AlertCircle, Clock, X, ChevronDown, Activity, Zap, Globe
+  Webhook, Plus, Send, Trash2, X, ChevronDown
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────

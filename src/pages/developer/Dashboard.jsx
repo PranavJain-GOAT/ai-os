@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { MOCK_PRODUCTS } from "@/api/mockData";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
-  Package, DollarSign, Download, TrendingUp, Plus, Clock,
-  CheckCircle, AlertCircle, Copy, Check, Terminal, X,
-  Zap, Activity, Award, ChevronRight, BarChart2, Command,
-  ArrowUpRight, Sparkles, Radio
+  Package, DollarSign, Download, TrendingUp, Clock,
+  CheckCircle, Copy, Check, Terminal, X,
+  Zap, Award, ChevronRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";

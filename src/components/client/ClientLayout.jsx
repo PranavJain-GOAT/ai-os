@@ -4,7 +4,7 @@ import {
   Menu, X, History, ListTodo, Users, Heart, MessageSquare,
   CreditCard, ArrowLeft, Puzzle, Rocket, Wallet, Search, Command
 } from "lucide-react";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 const NAV_ITEMS = [

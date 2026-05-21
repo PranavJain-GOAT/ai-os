@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MOCK_PRODUCTS, MOCK_CUSTOM_SOLUTIONS } from "@/api/mockData";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowLeft, Check, Upload, Settings, CreditCard, Shield, Smartphone, QrCode, CreditCard as CardIcon, Loader2, Link as LinkIcon, ExternalLink, Plus, X, Image as ImageIcon, FileText, FileBadge, Building2, MapPin, Mail, Phone, Globe, Briefcase, UserRoundSearch } from "lucide-react";
+import { ArrowRight, ArrowLeft, Check, Upload, Settings, CreditCard, Loader2, Link as LinkIcon, ExternalLink, Plus, X, Image as ImageIcon, FileText, FileBadge, Building2, MapPin, Mail, Phone, Globe, Briefcase, UserRoundSearch } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 

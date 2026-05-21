@@ -6,7 +6,7 @@ import {
 } from "recharts";
 import {
   Activity, Cpu, RefreshCw, TrendingUp, MessageSquare, Zap, Settings, Eye, Users, Clock, ArrowLeft,
-  CheckCircle, AlertTriangle, XCircle, ArrowUpRight, Shield, Sparkles
+  CheckCircle, AlertTriangle, XCircle, ArrowUpRight, Shield
 } from "lucide-react";
 import { Link } from "react-router-dom";
 

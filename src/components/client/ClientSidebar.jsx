@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import {
   History, ListTodo, Users, Heart, MessageSquare,
-  CreditCard, ArrowLeft, Puzzle, Crown, Zap, BarChart2
+  CreditCard, ArrowLeft, Puzzle, Crown
 } from "lucide-react";
 import { useRef } from "react";
 

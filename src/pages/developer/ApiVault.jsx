@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Key, Eye, EyeOff, Copy, Check, Trash2, Plus, RefreshCw,
-  Shield, Lock, Unlock, Zap, AlertTriangle, ChevronDown, X
+  Shield, Lock, Unlock, Zap, AlertTriangle, X
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, Menu, X, Code2, User, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LiveSearch from "./home/LiveSearch";

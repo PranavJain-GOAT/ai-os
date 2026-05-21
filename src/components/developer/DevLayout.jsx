@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import DevSidebar from "./DevSidebar";
 import {
   Menu, X, LayoutDashboard, Package, Plus,
-  ArrowLeft, MessageSquare, User, Command, Search
+  ArrowLeft, MessageSquare, User, Command
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 

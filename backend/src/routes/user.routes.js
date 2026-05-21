@@ -16,7 +16,9 @@ router.get('/me', authenticate, async (req, res, next) => {
         firstName: true,
         lastName: true,
         country: true,
-        isEmailVerified: true 
+        isEmailVerified: true,
+        profileImage: true,
+        authProvider: true
       }
     });
     res.status(200).json({ success: true, data: user });
@@ -37,7 +39,9 @@ router.get('/profile', authenticate, async (req, res, next) => {
         firstName: true,
         lastName: true,
         country: true,
-        isEmailVerified: true 
+        isEmailVerified: true,
+        profileImage: true,
+        authProvider: true
       }
     });
     res.status(200).json({ success: true, data: user });

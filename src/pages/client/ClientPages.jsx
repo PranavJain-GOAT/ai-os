@@ -1,11 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Package, CheckCircle, Clock, CreditCard, Heart, MessageSquare,
-  TrendingUp, Activity, Users, Zap, Bot, Brain, Upload, ChevronRight,
-  Star, Circle, ArrowUpRight, Plug, ToggleLeft, Phone, ShoppingBag,
-  Slack as SlackIcon, RefreshCw, Wallet, FileText, Shield, Crown,
-  Play, Settings, X, FileUp, BarChart2, AlertCircle, Target, Award,
-  ArrowRight, ExternalLink, Plus, Sparkles
+import { CheckCircle, Clock, CreditCard, Heart, MessageSquare,
+  TrendingUp, Activity, Users, Zap, Bot, Brain, ChevronRight, ArrowUpRight, RefreshCw, Wallet, FileText, X, FileUp, BarChart2, Target
 } from "lucide-react";
 import { useState, useRef } from "react";
 

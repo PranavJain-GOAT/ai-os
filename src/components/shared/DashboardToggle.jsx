@@ -5,7 +5,7 @@
  * /client and /developer dashboard roots.
  */
 import { useNavigate, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ShoppingBag, Code2, ArrowLeftRight } from "lucide-react";
 import { useTheme } from "@/lib/ThemeContext";
 

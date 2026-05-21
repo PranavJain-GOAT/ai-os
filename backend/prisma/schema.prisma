@@ -28,19 +28,24 @@ enum PurchaseStatus {
 }
 
 model User {
-  id              String         @id @default(uuid())
-  email           String         @unique
-  password        String?
-  googleId        String?        @unique
-  name            String
-  firstName       String?
-  lastName        String?
-  country         String?        @default("India")
-  role            Role           @default(CLIENT)
-  isEmailVerified Boolean        @default(false)
-  stripeAccountId String?        // For developers to receive payments via Stripe Connect
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id                    String         @id @default(uuid())
+  email                 String         @unique
+  password              String?
+  googleId              String?        @unique
+  name                  String
+  firstName             String?
+  lastName              String?
+  country               String?        @default("India")
+  role                  Role           @default(CLIENT)
+  isEmailVerified       Boolean        @default(false)
+  stripeAccountId       String?        // For developers to receive payments via Stripe Connect
+  authProvider          String         @default("email")
+  profileImage          String?
+  lastLogin             DateTime?
+  resetPasswordToken    String?
+  resetPasswordExpires  DateTime?
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
 
   // Relations
   products      Product[]

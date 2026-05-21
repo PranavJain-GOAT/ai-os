@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MOCK_CUSTOM_SOLUTIONS } from "@/api/mockData";
-import { Star, Wrench, ArrowRight, Check, X, Clock, Users, ExternalLink, MessageCircle, ChevronLeft, Zap, Activity, Play, ArrowUpRight, ListChecks, LifeBuoy, CreditCard } from "lucide-react";
+import { Star, Wrench, Check, X, Users, ChevronLeft, Zap, Play, ArrowUpRight, ListChecks, LifeBuoy, CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function CustomSolutionDetail() {

@@ -1,9 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  FlaskConical, Send, RefreshCw, Save, ChevronDown,
-  Thermometer, Sliders, MessageSquare, Bot, RotateCcw,
-  Check, Plus, History, X
+import { Send, Save, Sliders, Bot, RotateCcw, History, X
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────

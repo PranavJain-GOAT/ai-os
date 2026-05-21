@@ -1,8 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
-import { ArrowRight, Zap, Play, Copy, Check } from "lucide-react";
+import { Copy, Check } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
-import MagneticButton from "../MagneticButton";
 import confetti from "canvas-confetti";
 import { useTheme } from "@/lib/ThemeContext";
 
