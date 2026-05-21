@@ -65,4 +65,7 @@ app.get('/api/v1/health', (req, res) => {
 // Mounted Routes
 app.use('/api/v1', routes);
 
+// Global Error Handler
+app.use(errorHandler);
+
 module.exports = app;

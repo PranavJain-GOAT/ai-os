@@ -95,7 +95,7 @@ export default function Auth() {
     setLoading(true);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api/v1';
       let endpoint = "/auth/register";
       let payload = {};
 
@@ -136,7 +136,7 @@ export default function Auth() {
     setLoading(true);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api/v1';
       const response = await axios.post(`${apiUrl}/auth/forgot-password`, { email: form.email });
       
       if (response.data.success) {
@@ -173,7 +173,7 @@ export default function Auth() {
     setLoading(true);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api/v1';
       const response = await axios.post(`${apiUrl}/auth/reset-password`, { 
         token: tokenParam,
         newPassword: resetForm.password
@@ -356,7 +356,7 @@ export default function Auth() {
                           variant="outline"
                           type="button"
                           onClick={() => {
-                            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+                            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api/v1';
                             window.location.href = `${apiUrl}/auth/google`;
                           }}
                           className="h-12 rounded-full gap-3 border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 bg-white dark:bg-transparent font-bold text-gray-700 dark:text-gray-300 shadow-sm transition-all"

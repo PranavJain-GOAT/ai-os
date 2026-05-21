@@ -21,7 +21,7 @@ export default function AuthCallback() {
         return;
       }
 
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api/v1';
 
       // 1. Double check if cookies are already present and active (standard HTTP-only flow)
       try {

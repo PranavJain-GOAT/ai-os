@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { MOCK_PRODUCTS, MOCK_CUSTOM_SOLUTIONS } from "@/api/mockData";
-import { Search, X, Package, Layers } from "lucide-react";
-import { motion } from "framer-motion";
+import { Search, X, Package, Layers, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import SearchFiltersBar from "../components/home/SearchFiltersBar";
 

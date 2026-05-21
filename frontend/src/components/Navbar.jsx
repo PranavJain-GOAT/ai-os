@@ -120,8 +120,12 @@ export default function Navbar() {
             {/* CTAs & Profile */}
             <div className="flex items-center gap-4 shrink-0 ml-auto z-50">
               {isAuthenticated ? (
-                <div className="relative group">
+                <div 
+                  className="relative group"
+                  onMouseLeave={() => setProfileOpen(false)}
+                >
                   <button
+                    onClick={() => setProfileOpen(!profileOpen)}
                     onMouseEnter={() => setProfileOpen(true)}
                     className="flex items-center gap-2 p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all"
                   >
@@ -137,7 +141,6 @@ export default function Navbar() {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        onMouseLeave={() => setProfileOpen(false)}
                         className="absolute right-0 mt-1 w-56 bg-white dark:bg-[#121212] rounded-2xl shadow-2xl border border-gray-100 dark:border-white/5 p-2 overflow-hidden"
                       >
                         <div className="px-3 py-3 border-b border-gray-50 dark:border-white/5 mb-1">

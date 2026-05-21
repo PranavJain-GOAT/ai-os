@@ -65,8 +65,10 @@ export default function InstallFlow() {
     const amount = product?.price || product?.price_min || 0;
     setLoading(true);
     
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api/v1';
+    
     try {
-      const { data } = await axios.post('http://127.0.0.1:5000/api/v1/payment/order', {
+      const { data } = await axios.post(`${apiUrl}/payment/order`, {
         amount: amount,
         currency: 'USD'
       });
@@ -91,7 +93,7 @@ export default function InstallFlow() {
         order_id: data.order_id,
         handler: async function (response) {
           try {
-            const verifyData = await axios.post('http://127.0.0.1:5000/api/v1/payment/verify', {
+            const verifyData = await axios.post(`${apiUrl}/payment/verify`, {
               orderId: data.order_id,
               paymentId: response.razorpay_payment_id,
               signature: response.razorpay_signature
