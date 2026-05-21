@@ -7,12 +7,14 @@ const registerSchema = Joi.object({
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   country: Joi.string().required(),
-  role: Joi.string().valid('CLIENT', 'DEVELOPER', 'client', 'developer').optional()
+  role: Joi.string().valid('CLIENT', 'DEVELOPER', 'client', 'developer').optional(),
+  rememberMe: Joi.boolean().optional()
 });
 
 const loginSchema = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().required()
+  password: Joi.string().required(),
+  rememberMe: Joi.boolean().optional()
 });
 
 const productSchema = Joi.object({
